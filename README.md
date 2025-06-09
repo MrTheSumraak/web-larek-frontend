@@ -40,3 +40,5 @@ npm run build
 ```
 yarn build
 ```
+
+По интерфейсам все раскидал в src/types/index.ts
