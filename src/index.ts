@@ -1,7 +1,7 @@
-import { Modal } from './components/modal';
+import { Modal } from './components/modalWidnow';
 import './scss/styles.scss';
 
-const modalManager = new Modal
+const modalManager = new Modal()
 
 const setupModalListeners = (): void => {  // это я пока просто на скорую руку сделал, что бы закрыть попап
 	const modalList = document.querySelectorAll('.modal');
