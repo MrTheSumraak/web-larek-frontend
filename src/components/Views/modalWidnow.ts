@@ -1,40 +1,38 @@
 export class Modal {
-	openClose(event: Event, adRem: 'add' | 'remove') {
-		const target = event.target as HTMLElement;
-		const popup = target.closest('.modal');
 
-		if (popup) {
-			popup.classList[adRem]('modal_active');
-		} else {
-			throw new Error(`Элемент ${popup} не найден!`);
+	protected openModal(openBtn: HTMLElement, modalWindow: HTMLElement, page: HTMLElement) {
+
+		if (!openBtn) {
+			throw new Error('Кнопка открытия не найдена');
 		}
-	}
 
-	openModal(btn: HTMLButtonElement, modalWindow: HTMLElement) {
-		btn.addEventListener('click', () => {
+		openBtn.addEventListener('click', () => {
 			modalWindow.classList.add('modal_active');
 		});
+
+		page.classList.add ('page__locked')
 	}
 
-	protected closeModal(ev: Event): void {
-		this.openClose(ev, 'remove');
-	}
+	protected closeModal(modalWindow: HTMLElement, page:HTMLElement): void {
+		const closeButton = modalWindow.querySelector('.modal__close');
 
-	setupModalListeners(): void {
-		const modalList = document.querySelectorAll('.modal');
-
-		if (modalList.length === 0) {
-			throw new Error(`Коллекция modalList не найдена!`);
+		if (!closeButton) {
+			throw new Error('Кнопка закрытия не найдена');
 		}
 
-		modalList.forEach((modal) => {
-			modal.addEventListener('click', (evt) => {
-				const target = evt.target as HTMLElement;
-
-				if (target.classList.contains('modal__close') || target === modal) {
-					this.closeModal(evt);
-				}
-			});
+		closeButton.addEventListener('click', () => {
+			modalWindow.classList.remove('modal_active');
 		});
+
+		page.classList.remove ('page__locked')
+	}
+
+	setupModalListeners(
+		modalWidnow: HTMLElement,
+		openBtn: HTMLElement,
+		page: HTMLElement
+	): void {
+		this.openModal(openBtn, modalWidnow, page);
+		this.closeModal(modalWidnow, page);
 	}
 }

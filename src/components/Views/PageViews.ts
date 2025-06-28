@@ -29,11 +29,12 @@ export class PageView {
 
 	private product: ProductCard[];
 	private contentUrl: string
-	protected productTemplate = document.querySelector('#card-catalog') as HTMLTemplateElement
+	protected productTemplate: HTMLTemplateElement
 
-	constructor(dataItems: ProductCard[] = [], contentUrl: string) {
+	constructor(dataItems: ProductCard[] = [], contentUrl: string, template: HTMLTemplateElement) {
 		this.product = dataItems;
 		this.contentUrl = contentUrl
+		this.productTemplate = template
 	}
 
 	check() {

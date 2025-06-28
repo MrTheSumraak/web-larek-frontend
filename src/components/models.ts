@@ -1,4 +1,4 @@
-import { ProductCard, OrderPopup } from "../types"
+import { ProductCard } from "../types"
 
 export class ProductModel {  // класс управляет карточками товара
    protected items: ProductCard[] = [] 

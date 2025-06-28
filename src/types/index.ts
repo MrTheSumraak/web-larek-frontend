@@ -1,5 +1,65 @@
 // слой view - интерфейсы отображния
 
+export interface ISuccessItems {
+	orderSuccess: HTMLElement
+	orderSuccesstitle?: HTMLElement
+	orderSuccessDescription?: HTMLElement
+	orderSuccessButton?: HTMLButtonElement
+}
+
+export interface ICardCatalogItems {
+	galleryItemButton: HTMLButtonElement
+	cardCategory?: HTMLElement
+	cardTitle?: HTMLElement
+	cardImage?: HTMLImageElement
+	cardPrice?: HTMLElement
+}
+
+export interface IPreviewItems {
+	cardFull: HTMLElement
+	imagePreview?: HTMLImageElement
+	cardCategoryPreview?: HTMLElement
+	cardTitlePrevuew?: HTMLElement
+	cardTitlePreview?: HTMLElement
+	cardDescriptionPreview?: HTMLElement
+	cardButtonPreview?: HTMLButtonElement
+	cardPricePreview?: HTMLElement
+}
+
+export interface IAddedProductItems {
+	basketItem: HTMLElement
+	basketCardIndex?: HTMLElement
+	basketCardTitle: HTMLElement
+	basketCardPrice?: HTMLElement
+	basketItemDeleteButton?: HTMLButtonElement
+}
+
+export interface IBasketItems {
+	basketInside: HTMLElement
+	basketTitle?: HTMLElement
+	basketList?: HTMLElement
+	makingOrderButton?: HTMLButtonElement
+	finalpriceButton?: HTMLElement
+}
+
+export interface IFormOrderItems {
+	formOrder: HTMLFormElement
+	buttonOnline?: HTMLButtonElement
+	buttonCash?: HTMLButtonElement
+	formInputAdress?: HTMLInputElement
+	submitButtonFurther?: HTMLButtonElement
+	errorSpanAdress?: HTMLElement
+}
+
+export interface IFormContactsItens {
+	formContacts: HTMLFormElement
+	emalInput?: HTMLInputElement
+	phoneInput?: HTMLInputElement
+	submitButtonContacts?: HTMLButtonElement
+	errorSpanContacts?: HTMLElement
+}
+
+
 export interface ProductCard { // интерфейс карточки товара, содержащий в себе:
 	category: string; // категория товара
 	description: string; // описание карточки(софт-скилл, дополнительное, кнопка и тд)
@@ -24,16 +84,17 @@ export interface ProductAddPopup extends ProductCard, CloseModalButton {
 	buyButton: string | HTMLButtonElement; // кнопка покупки
 }
 
-export interface OrderPopup extends CloseModalButton {
+export interface SelectedProduct {
+		// выбранный продукт, представим его массивом объектов, в котором:
+		sequenceNumber: number | HTMLElement; // порядковый номер
+		nameProduct: string | HTMLElement; // название продукта
+		priceProduct: number | HTMLElement; // его цена
+		deleteProduct: string | HTMLButtonElement; // ну и кнопка удаления продукта из корзины
+}[];
+
+export interface OrderBasketPopup extends CloseModalButton, SelectedProduct {
 	// модальное окно выбранных заказов - корзина
 	nameModal: string; // т.е название модального окна - корзина
-	selectedProduct: {
-		// выбранный продукт, представим его массивом объектов, в котором:
-		sequenceNumber: number; // порядковый номер
-		nameProduct: string; // название продукта
-		priceProduct: number; // его цена
-		deleteProduct: string | HTMLButtonElement; // ну и кнопка удаления продукта из корзины
-	}[];
 	finalPrice: number; // итоговая цена заказа
 	checkoutButton: string | HTMLButtonElement; // кнопка оформления заказа
 }
