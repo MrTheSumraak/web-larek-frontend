@@ -1,38 +1,45 @@
-export class Modal {
+import { IModalData } from "../../types";
+import { ensureElement } from "../../utils/utils";
+import { Component } from "../base/Component";
+import { EventEmitter } from "../base/events";
 
-	protected openModal(openBtn: HTMLElement, modalWindow: HTMLElement, page: HTMLElement) {
+export class ModalWindow extends Component<IModalData> {
+	protected emitter: EventEmitter
+	protected closeButton: HTMLButtonElement
+	protected modalContent: HTMLElement
 
-		if (!openBtn) {
-			throw new Error('Кнопка открытия не найдена');
-		}
+	constructor (container: HTMLElement, emitter: EventEmitter) {
+		super (container)
+		this.emitter = emitter
 
-		openBtn.addEventListener('click', () => {
-			modalWindow.classList.add('modal_active');
-		});
+		this.closeButton = ensureElement<HTMLButtonElement>('.modal__close', container);
+   	this.modalContent = ensureElement<HTMLElement>('.modal__content', container);
 
-		page.classList.add ('page__locked')
+		this.closeButton.addEventListener('click', this.closeModal.bind(this));
+		this.container.addEventListener('click', this.closeModal.bind(this));
+		this.modalContent.addEventListener('click', (event) => event.stopPropagation());
 	}
 
-	protected closeModal(modalWindow: HTMLElement, page:HTMLElement): void {
-		const closeButton = modalWindow.querySelector('.modal__close');
+  setContent(value: HTMLElement) {
+    this.modalContent.replaceChildren(value);
+  }
 
-		if (!closeButton) {
-			throw new Error('Кнопка закрытия не найдена');
-		}
-
-		closeButton.addEventListener('click', () => {
-			modalWindow.classList.remove('modal_active');
-		});
-
-		page.classList.remove ('page__locked')
+	openModal () {
+	 	this.container.classList.add('modal_active');
+    	this.emitter.emit('modal:open');
+	 	document.body.style.overflow = 'hidden';
 	}
 
-	setupModalListeners(
-		modalWidnow: HTMLElement,
-		openBtn: HTMLElement,
-		page: HTMLElement
-	): void {
-		this.openModal(openBtn, modalWidnow, page);
-		this.closeModal(modalWidnow, page);
+	closeModal () {
+		this.container.classList.remove('modal_active');
+   	this.modalContent.innerHTML = '';
+   	this.emitter.emit('modal:close');
+		document.body.style.overflow = '';
 	}
-}
+
+	render(data?: Partial<IModalData>): HTMLElement {
+   	super.render(data);
+   	this.openModal();
+   	return this.container;
+  }
+} 

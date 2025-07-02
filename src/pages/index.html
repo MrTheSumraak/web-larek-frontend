@@ -34,10 +34,29 @@
 			<main class="gallery" data-id="main"></main>
 		</div>
 
+		modal_active
+
 		<div class="modal" id="modal-container">
 			<div class="modal__container">
 				<button class="modal__close" aria-label="закрыть"></button>
-				<div class="modal__content"></div>
+				<div class="modal__content">
+					<!-- <div class="basket" data-id="basketInside">
+						<h2 class="modal__title" data-id="basketTitle">Корзина</h2>
+						<ul class="basket__list" data-id="basketListTemplate">
+							<li>
+								<h1>zalupa</h1>
+							</li>
+						</ul>
+						<div class="modal__actions">
+							<button class="button basket__button" data-id="makingOrderButton">
+								Оформить
+							</button>
+							<span class="basket__price" data-id="finalPriceButton"
+								>0 синапсов</span
+							>
+						</div>
+					</div> -->
+				</div>
 			</div>
 		</div>
 
@@ -77,11 +96,11 @@
 				<div class="modal__content">
 					<div class="basket">
 						<h2 class="modal__title">Корзина</h2>
-						<ul class="basket__list" data-id="basketList">
-							
-						</ul>
+						<ul class="basket__list" data-id="basketList"></ul>
 						<div class="modal__actions">
-							<button class="button" data-id="intermediateButton">Оформить</button>
+							<button class="button" data-id="intermediateButton">
+								Оформить?
+							</button>
 							<span class="basket__price">0 синапсов</span>
 						</div>
 					</div>
@@ -183,7 +202,7 @@
 		</template>
 
 		<template id="card-catalog" data-id="catalogtemplate">
-			<button class="gallery__item card" data-id="galleryItem">
+			<button class="gallery__item card" data-id="galleryItem" data-id-personal="" data-description="">
 				<span class="card__category card__category_soft" data-id="cardCategory"
 					>софт-скил</span
 				>
@@ -248,7 +267,7 @@
 		<template id="basket" data-id="basketTemplate">
 			<div class="basket" data-id="basketInside">
 				<h2 class="modal__title" data-id="basketTitle">Корзина</h2>
-				<ul class="basket__list" data-id="basketList"></ul>
+				<ul class="basket__list" data-id="basketListTemplate"></ul>
 				<div class="modal__actions">
 					<button class="button basket__button" data-id="makingOrderButton">
 						Оформить

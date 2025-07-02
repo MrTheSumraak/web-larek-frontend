@@ -19,7 +19,6 @@ export interface IPreviewItems {
 	cardFull: HTMLElement
 	imagePreview?: HTMLImageElement
 	cardCategoryPreview?: HTMLElement
-	cardTitlePrevuew?: HTMLElement
 	cardTitlePreview?: HTMLElement
 	cardDescriptionPreview?: HTMLElement
 	cardButtonPreview?: HTMLButtonElement
@@ -60,12 +59,22 @@ export interface IFormContactsItens {
 }
 
 
+export interface IModalData {
+	// content: HTMLElement;
+	image: HTMLImageElement
+	title: HTMLElement
+	description: HTMLElement
+	button: HTMLButtonElement
+	category: HTMLElement
+	price: HTMLElement
+}
+
 export interface ProductCard { // интерфейс карточки товара, содержащий в себе:
 	category: string; // категория товара
 	description: string; // описание карточки(софт-скилл, дополнительное, кнопка и тд)
-	id: string | number; // id-шник карточки, куда же без него
+	id: string; // id-шник карточки, куда же без него
 	image: string;
-	price: number; // цена карточки, т.е товара
+	price: number | null; // цена карточки, т.е товара
 	title: string; // название
 }
 

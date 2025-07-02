@@ -6,13 +6,14 @@ import {
 	IFormOrderItems,
 	IPreviewItems,
 	ISuccessItems,
-} from '../../types';
+} from '../../../types';
 
 export abstract class CloneTemplate {
 	clone: DocumentFragment;
 
 	constructor(template: HTMLTemplateElement) {
 		this.clone = template.content.cloneNode(true) as DocumentFragment;
+		// console.log(this.clone)
 	}
 }
 
@@ -49,11 +50,11 @@ export class CatalogtemplateItems extends CloneTemplate implements ICardCatalogI
 
    constructor (template: HTMLTemplateElement) {
       super(template)
-      this.galleryItemButton = this.clone.querySelector('[data-id="galleryItem"]')
-      this.cardCategory = this.galleryItemButton.querySelector('[data-id="cardCategory"]')
-      this.cardTitle = this.galleryItemButton.querySelector('[data-id="cardTitle"]')
-      this.cardImage = this.galleryItemButton.querySelector('[data-id="cardImage"]')
-      this.cardPrice = this.galleryItemButton.querySelector('[data-id="cardPrice"]')
+      this.galleryItemButton = this.clone.querySelector('[data-id="galleryItem"]') as HTMLButtonElement
+      this.cardCategory = this.galleryItemButton.querySelector('[data-id="cardCategory"]') as HTMLElement
+      this.cardTitle = this.galleryItemButton.querySelector('[data-id="cardTitle"]') as HTMLElement
+      this.cardImage = this.galleryItemButton.querySelector('[data-id="cardImage"]') as HTMLImageElement
+      this.cardPrice = this.galleryItemButton.querySelector('[data-id="cardPrice"]') as HTMLElement
    }
 }
 
@@ -114,7 +115,7 @@ export class PreviewTemplateItems
 
 	constructor(template: HTMLTemplateElement) {
 		super(template);
-		this.cardFull = this.clone.querySelector('[data-id="cardPreview"]');
+		this.cardFull = this.clone.querySelector('[data-id="cardPreview"]') as HTMLElement;
 		this.imagePreview = this.cardFull.querySelector('[data-id="imagePreview"]');
 		this.cardCategoryPreview = this.cardFull.querySelector(
 			'[data-id="cardCategoryPreview"]'
@@ -175,7 +176,7 @@ export class BasketTemplateItems extends CloneTemplate implements IBasketItems {
 		this.basketTitle = this.basketInside.querySelector(
 			'[ data-id="basketTitle"]'
 		);
-		this.basketList = this.basketInside.querySelector('[data-id="basketList"]');
+		this.basketList = this.basketInside.querySelector('[data-id="basketListTemplate"]');
 		this.makingOrderButton = this.basketInside.querySelector(
 			'[data-id="makingOrderButton"]'
 		);
