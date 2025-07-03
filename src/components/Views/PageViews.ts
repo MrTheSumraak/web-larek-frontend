@@ -40,20 +40,43 @@ class ProductCardCreate extends Component<IModalData> {
 		const categoryProduct = galleryItem.querySelector('[data-id="cardCategory"]') as HTMLElement
 		const titleProduct = galleryItem.querySelector('[data-id="cardTitle"]') as HTMLElement
 		const imgProduct = galleryItem.querySelector('[data-id="cardImage"]') as HTMLImageElement
-		// console.log(imgProduct)
 		const priceProduct = galleryItem.querySelector('[data-id="cardPrice"]') as HTMLElement
 
 		this.setText(categoryProduct, productElement.category)
 		this.setText(titleProduct, productElement.title)
 		this.setImage(imgProduct, `${contentUrl}${productElement.image}`)
-		this.setText(priceProduct, String(productElement.price))
+		this.setText(priceProduct, `${String(productElement.price)} синапсов`)
 		galleryItem.setAttribute('data-id-personal', productElement.id)
 		galleryItem.setAttribute('data-description', productElement.description)
 		this.buttonElement = galleryItem
 
+		this.setClassCategory (categoryProduct)
+		this.setPrice(priceProduct)
+
 		galleryItem.addEventListener ('click', (ev) => {
 			emitter.emit ('cardPreview:on', ev)
 		})
+	}
+
+	setClassCategory (element: HTMLElement, ) {
+		if (element.textContent.toLowerCase() === 'другое') {
+			this.toggleClass(element, 'card__category_other')
+		}
+		if (element.textContent.toLowerCase() === 'дополнительное') {
+			this.toggleClass(element, 'card__category_additional')
+		}
+		if (element.textContent.toLowerCase() === 'кнопка') {
+			this.toggleClass(element, 'card__category_button')
+		}
+		if (element.textContent.toLowerCase() === 'хард-скил') {
+			this.toggleClass(element, 'card__category_hard')
+		}
+	}
+
+	setPrice (priceProduct: HTMLElement) {
+		if (priceProduct.textContent === 'null синапсов') {
+			priceProduct.textContent = 'Бесценно'
+		}
 	}
 
 	getElement (): HTMLElement {

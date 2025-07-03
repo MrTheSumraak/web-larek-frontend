@@ -58,49 +58,6 @@ export class CatalogtemplateItems extends CloneTemplate implements ICardCatalogI
    }
 }
 
-// export class CatalogtemplateItems
-// 	implements ICardCatalogItems
-// {
-// 	galleryItemButton: HTMLButtonElement;
-// 	cardCategory: HTMLElement;
-// 	cardTitle: HTMLElement;
-// 	cardImage: HTMLImageElement;
-// 	cardPrice: HTMLElement;
-//    clone: DocumentFragment
-
-// 	constructor(template: HTMLTemplateElement) {
-//       const clonTemplate = template.content.cloneNode(true) as DocumentFragment;
-// 		this.clone = clonTemplate;
-
-// 		this.galleryItemButton = this.clone.querySelector(
-// 			'[data-id="galleryItem"]'
-// 		);
-// 		this.cardCategory = this.galleryItemButton.querySelector(
-// 			'[data-id="cardCategory"]'
-// 		);
-// 		this.cardTitle = this.galleryItemButton.querySelector(
-// 			'[data-id="cardTitle"]'
-// 		);
-// 		this.cardImage = this.galleryItemButton.querySelector(
-// 			'[data-id="cardImage"]'
-// 		);
-// 		this.cardPrice = this.galleryItemButton.querySelector(
-// 			'[data-id="cardPrice"]'
-// 		);
-// 	}
-
-// 	static createFromTemplate(
-// 		template: HTMLTemplateElement
-// 	): CatalogtemplateItems {
-// 		const clone = template.content.cloneNode(true) as DocumentFragment;
-// 		return new CatalogtemplateItems(this.clone);
-// 	}
-
-// 	getRoot(): HTMLElement {
-// 		return this.galleryItemButton;
-// 	}
-// }
-
 export class PreviewTemplateItems
 	extends CloneTemplate
 	implements IPreviewItems

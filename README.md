@@ -43,10 +43,10 @@ yarn build
 
 В работе применяется паттерн MVP, где:
 
-components/models.ts -  отвечает за работу бизнесс-логики
-components/views.ts -  отвечает за отображение 
-components/presenters.ts - презентор, отвевает за соединение models и views
-components/modal.ts - отвечающий за открытие/закрытие
+components/models.ts - отвечает за работу бизнесс-логики
+components/views.ts - отвечает за отображение 
+components/index.ts - презентор, отвевает за соединение models и views
+components/modal.ts - отвечающий за работу модального окна
 
 *********
 

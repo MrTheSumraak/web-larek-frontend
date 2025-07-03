@@ -1,12 +1,6 @@
-import { ICardCatalogItems, IPreviewItems } from "../../types";
+import { ICardCatalogItems, IPreviewItems, IPreviewCardContent } from "../../types";
 
-interface IPreviewCardContent {
-category: string,
-title: string,
-img: string,
-price: string,
-cardDescription: string
-}
+
 
 export class PreviewCardContent {
 

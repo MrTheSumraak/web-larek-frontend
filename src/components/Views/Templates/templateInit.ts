@@ -1,6 +1,6 @@
 import { ensureElement } from '../../../utils/utils';
 
-export class TemplateView {
+export class TemplateListView {
    successTemplate: HTMLTemplateElement;
    catalogTemplate: HTMLTemplateElement;
    previewTemplate: HTMLTemplateElement;

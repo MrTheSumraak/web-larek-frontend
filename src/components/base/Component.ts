@@ -10,6 +10,20 @@ export abstract class Component<T> {
 
     // Инструментарий для работы с DOM в дочерних компонентах
 
+    lockedButton(button: HTMLButtonElement) {
+		button.disabled = true;
+		button.classList.add('button_alt-disable');
+	}
+
+	unLocked(button: HTMLButtonElement) {
+		button.disabled = false;
+		button.classList.remove('button_alt-disable');
+	}
+
+    isPrice (price: string): boolean {
+		return !price.trim().toLowerCase().includes('бесценно');
+	}
+
     // Переключить класс
     toggleClass(element: HTMLElement, className: string, force?: boolean) {
         element.classList.toggle(className, force);

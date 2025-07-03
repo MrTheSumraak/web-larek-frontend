@@ -202,7 +202,12 @@
 		</template>
 
 		<template id="card-catalog" data-id="catalogtemplate">
-			<button class="gallery__item card" data-id="galleryItem" data-id-personal="" data-description="">
+			<button
+				class="gallery__item card"
+				data-id="galleryItem"
+				data-id-personal=""
+				data-description=""
+			>
 				<span class="card__category card__category_soft" data-id="cardCategory"
 					>софт-скил</span
 				>
@@ -267,7 +272,22 @@
 		<template id="basket" data-id="basketTemplate">
 			<div class="basket" data-id="basketInside">
 				<h2 class="modal__title" data-id="basketTitle">Корзина</h2>
-				<ul class="basket__list" data-id="basketListTemplate"></ul>
+				<ul class="basket__list" data-id="basketListTemplate">
+					<!-- <li class="basket__item card card_compact" data-id="basketItem">
+						<span class="basket__item-index" data-id="basketIndex">1</span>
+						<span class="card__title" data-id="basketCardTtitle"
+							>Фреймворк куки судьбы</span
+						>
+						<span class="card__price" data-id="basketCardPrice"
+							>2500 синапсов</span
+						>
+						<button
+							class="basket__item-delete card__button"
+							aria-label="удалить"
+							data-id="basketItemDeleteButton"
+						></button>
+					</li> -->
+				</ul>
 				<div class="modal__actions">
 					<button class="button basket__button" data-id="makingOrderButton">
 						Оформить

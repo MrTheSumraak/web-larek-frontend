@@ -1,10 +1,15 @@
+import { IPreviewCardContent, SelectedProduct } from '../../types';
 import { createElement, ensureElement } from '../../utils/utils';
+import { Component } from '../base/Component';
 import { EventEmitter } from '../base/events';
 
-export class BasketView {
-	basketButton: HTMLButtonElement;
 
-	constructor(emiter: EventEmitter) {
+export class BasketView extends Component<IPreviewCardContent> {
+	basketButton: HTMLButtonElement;
+	productList: SelectedProduct[]
+
+	constructor(emiter: EventEmitter, container?: HTMLElement) {
+		super (container)
 		this.basketButton = ensureElement<HTMLButtonElement>('.header__basket');
 
 		if (this.basketButton) {
@@ -12,20 +17,12 @@ export class BasketView {
 				emiter.emit('basket:on');
 			});
 		}
+
+		this.productList = []
 	}
 
 	clearBasket() {
 		// basketList.innerHTML = ''
-	}
-
-	private lockedButton(button: HTMLButtonElement) {
-		button.disabled = true;
-		button.classList.add('button_alt-disable');
-	}
-
-	private unLocked(button: HTMLButtonElement) {
-		button.disabled = false;
-		button.classList.remove('button_alt-disable');
 	}
 
 	checkButton(button: HTMLButtonElement, basketList: HTMLElement) {
@@ -44,5 +41,27 @@ export class BasketView {
 		} else {
 			this.unLocked(button);
 		}
+	}
+
+	addProductBasket (data: Partial<IPreviewCardContent>, basketList: HTMLElement) {
+		const addedProduct: SelectedProduct = {
+			nameProduct: data.title,
+			priceProduct: String(data.price)
+		}
+		this.productList.push(addedProduct)
+		console.log(this.productList)
+
+		this.renderProduct(data, basketList)
+	}
+
+	private renderProduct (data: Partial<IPreviewCardContent>, basketList: HTMLElement) {
+		const template = document.querySelector('[data-id="addedProductTemplate"]') as HTMLTemplateElement
+		const clone = template?.content.cloneNode(true) as HTMLElement
+
+		clone.querySelector('[data-id="basketCardTtitle"]').textContent = data.title
+		clone.querySelector('[data-id="basketCardPrice"]').textContent = data.price
+		clone.querySelector('[data-id="basketIndex"]').textContent = String(this.productList.length)
+
+		basketList.appendChild(clone)
 	}
 }

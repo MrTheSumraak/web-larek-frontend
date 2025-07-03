@@ -9,8 +9,9 @@ import { BasketView } from './components/Views/basketView';
 import { ModalWindow } from './components/Views/modalWidnow';
 import { PageView } from './components/Views/pageViews';
 import { PreviewCardContent } from './components/Views/previewCardView';
-import { TemplateView } from './components/Views/Templates/templateInit';
+import { TemplateListView } from './components/Views/Templates/templateInit';
 import {
+	AddedProductTemplateItems,
 	BasketTemplateItems,
 	CatalogtemplateItems,
 	PreviewTemplateItems,
@@ -28,7 +29,7 @@ const main = ensureElement<HTMLElement>('[data-id="main"]');
 
 // находим все темплейнты
 // решил, что хранение всех темплейнтов в одном классе хорошая идея для ООП
-const templateInicilization = new TemplateView();
+const templateInicilization = new TemplateListView();
 
 const emitter = new EventEmitter();
 
@@ -36,7 +37,9 @@ const emitter = new EventEmitter();
 const basketContent = new BasketTemplateItems(templateInicilization.basketTemplate);
 const previewContent = new PreviewTemplateItems(templateInicilization.previewTemplate);
 const productItems = new CatalogtemplateItems(templateInicilization.catalogTemplate);
+const addedProduct = new AddedProductTemplateItems(templateInicilization.addedProductTemplate)
 
+// console.log(previewContent.cardButtonPreview)
 // менеджеры 
 const modalManager = new ModalWindow(modalContainer, emitter);
 const apiManager = new Api(API_URL);
@@ -85,4 +88,21 @@ emitter.on('cardPreview:on', (ev: MouseEvent) => {
 	previewCardContent.setContent({ category, title, img, price, cardDescription });
 	modalManager.setContent(previewContent.cardFull);
 	modalManager.render();
+
+	if (!basketManager.isPrice(price)) {
+      basketManager.lockedButton(previewContent.cardButtonPreview);
+   } else {
+      basketManager.unLocked(previewContent.cardButtonPreview);
+   }
+
+	previewContent.cardButtonPreview.addEventListener('click', () => {
+		emitter.emit ('basket:itemAdded', { title, price})
+	}, { once: true })
 });
+
+emitter.on ('basket:itemAdded',(payload: { title: string, price: string}) => {
+	if (basketManager.isPrice(payload.price)) {
+		basketManager.addProductBasket(payload, basketContent.basketList)
+		modalManager.closeModal()
+	} 
+})

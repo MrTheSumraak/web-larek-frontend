@@ -1,75 +1,83 @@
 // слой view - интерфейсы отображния
 
 export interface ISuccessItems {
-	orderSuccess: HTMLElement
-	orderSuccesstitle?: HTMLElement
-	orderSuccessDescription?: HTMLElement
-	orderSuccessButton?: HTMLButtonElement
+	orderSuccess: HTMLElement;
+	orderSuccesstitle?: HTMLElement;
+	orderSuccessDescription?: HTMLElement;
+	orderSuccessButton?: HTMLButtonElement;
 }
 
 export interface ICardCatalogItems {
-	galleryItemButton: HTMLButtonElement
-	cardCategory?: HTMLElement
-	cardTitle?: HTMLElement
-	cardImage?: HTMLImageElement
-	cardPrice?: HTMLElement
+	galleryItemButton: HTMLButtonElement;
+	cardCategory?: HTMLElement;
+	cardTitle?: HTMLElement;
+	cardImage?: HTMLImageElement;
+	cardPrice?: HTMLElement;
 }
 
 export interface IPreviewItems {
-	cardFull: HTMLElement
-	imagePreview?: HTMLImageElement
-	cardCategoryPreview?: HTMLElement
-	cardTitlePreview?: HTMLElement
-	cardDescriptionPreview?: HTMLElement
-	cardButtonPreview?: HTMLButtonElement
-	cardPricePreview?: HTMLElement
+	cardFull: HTMLElement;
+	imagePreview?: HTMLImageElement;
+	cardCategoryPreview?: HTMLElement;
+	cardTitlePreview?: HTMLElement;
+	cardDescriptionPreview?: HTMLElement;
+	cardButtonPreview?: HTMLButtonElement;
+	cardPricePreview?: HTMLElement;
 }
 
 export interface IAddedProductItems {
-	basketItem: HTMLElement
-	basketCardIndex?: HTMLElement
-	basketCardTitle: HTMLElement
-	basketCardPrice?: HTMLElement
-	basketItemDeleteButton?: HTMLButtonElement
+	basketItem: HTMLElement;
+	basketCardIndex?: HTMLElement;
+	basketCardTitle: HTMLElement;
+	basketCardPrice?: HTMLElement;
+	basketItemDeleteButton?: HTMLButtonElement;
 }
 
 export interface IBasketItems {
-	basketInside: HTMLElement
-	basketTitle?: HTMLElement
-	basketList?: HTMLElement
-	makingOrderButton?: HTMLButtonElement
-	finalpriceButton?: HTMLElement
+	basketInside: HTMLElement;
+	basketTitle?: HTMLElement;
+	basketList?: HTMLElement;
+	makingOrderButton?: HTMLButtonElement;
+	finalpriceButton?: HTMLElement;
 }
 
 export interface IFormOrderItems {
-	formOrder: HTMLFormElement
-	buttonOnline?: HTMLButtonElement
-	buttonCash?: HTMLButtonElement
-	formInputAdress?: HTMLInputElement
-	submitButtonFurther?: HTMLButtonElement
-	errorSpanAdress?: HTMLElement
+	formOrder: HTMLFormElement;
+	buttonOnline?: HTMLButtonElement;
+	buttonCash?: HTMLButtonElement;
+	formInputAdress?: HTMLInputElement;
+	submitButtonFurther?: HTMLButtonElement;
+	errorSpanAdress?: HTMLElement;
 }
 
 export interface IFormContactsItens {
-	formContacts: HTMLFormElement
-	emalInput?: HTMLInputElement
-	phoneInput?: HTMLInputElement
-	submitButtonContacts?: HTMLButtonElement
-	errorSpanContacts?: HTMLElement
+	formContacts: HTMLFormElement;
+	emalInput?: HTMLInputElement;
+	phoneInput?: HTMLInputElement;
+	submitButtonContacts?: HTMLButtonElement;
+	errorSpanContacts?: HTMLElement;
 }
 
+export interface IPreviewCardContent {
+	category: string;
+	title: string;
+	img: string;
+	price: string;
+	cardDescription: string;
+}
 
 export interface IModalData {
 	// content: HTMLElement;
-	image: HTMLImageElement
-	title: HTMLElement
-	description: HTMLElement
-	button: HTMLButtonElement
-	category: HTMLElement
-	price: HTMLElement
+	image: HTMLImageElement;
+	title: HTMLElement;
+	description: HTMLElement;
+	button: HTMLButtonElement;
+	category: HTMLElement;
+	price: HTMLElement;
 }
 
-export interface ProductCard { // интерфейс карточки товара, содержащий в себе:
+export interface ProductCard {
+	// интерфейс карточки товара, содержащий в себе:
 	category: string; // категория товара
 	description: string; // описание карточки(софт-скилл, дополнительное, кнопка и тд)
 	id: string; // id-шник карточки, куда же без него
@@ -94,12 +102,12 @@ export interface ProductAddPopup extends ProductCard, CloseModalButton {
 }
 
 export interface SelectedProduct {
-		// выбранный продукт, представим его массивом объектов, в котором:
-		sequenceNumber: number | HTMLElement; // порядковый номер
-		nameProduct: string | HTMLElement; // название продукта
-		priceProduct: number | HTMLElement; // его цена
-		deleteProduct: string | HTMLButtonElement; // ну и кнопка удаления продукта из корзины
-}[];
+	// выбранный продукт, представим его массивом объектов, в котором:
+	sequenceNumber?: number ; // порядковый номер
+	nameProduct: string ; // название продукта
+	priceProduct: number| string ; // его цена
+	deleteProduct?: string | HTMLButtonElement; // ну и кнопка удаления продукта из корзины
+};
 
 export interface OrderBasketPopup extends CloseModalButton, SelectedProduct {
 	// модальное окно выбранных заказов - корзина
