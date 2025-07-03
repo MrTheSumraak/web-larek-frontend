@@ -37,7 +37,7 @@ export class BasketView extends Component<IPreviewCardContent> {
 				});
 				basketNull.className = 'card__text';
 				basketList.appendChild(basketNull);
-				console.log(basketList);
+				// console.log(basketList);
 		} else {
 			this.unLocked(button);
 		}
@@ -49,7 +49,7 @@ export class BasketView extends Component<IPreviewCardContent> {
 			priceProduct: String(data.price)
 		}
 		this.productList.push(addedProduct)
-		console.log(this.productList)
+		// console.log(this.productList)
 
 		this.renderProduct(data, basketList)
 	}

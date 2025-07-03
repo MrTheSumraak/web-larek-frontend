@@ -105,7 +105,7 @@ export interface SelectedProduct {
 	// выбранный продукт, представим его массивом объектов, в котором:
 	sequenceNumber?: number ; // порядковый номер
 	nameProduct: string ; // название продукта
-	priceProduct: number| string ; // его цена
+	priceProduct:  string ; // его цена
 	deleteProduct?: string | HTMLButtonElement; // ну и кнопка удаления продукта из корзины
 };
 

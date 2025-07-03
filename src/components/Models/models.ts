@@ -1,17 +1,15 @@
 import { ProductCard, ProductResponse, SelectedProduct } from "../../types";
 import { Api } from "../base/api";
 import { EventEmitter } from "../base/events";
-import { BasketView } from "../Views/basketView";
 
 export class Model {
    protected apiContent: Api
    protected items: ProductCard[]
    protected emmiter: EventEmitter
 
-   constructor (api: Api, emmiter: EventEmitter, productList?: SelectedProduct[]) {
+   constructor (api: Api, emmiter: EventEmitter) {
       this.apiContent = api
       this.emmiter = emmiter
-      // this.getSumOfPrices(productList)
    }
 
    getCards () {
@@ -23,19 +21,16 @@ export class Model {
       })
    }
 
-   // getSumOfPrices (productList: SelectedProduct[]) {
-   //    productList.reduce (item => item.priceProduct)
-   // }
+   getSumOfPrices (productList: SelectedProduct[]): number {
+      const sum = productList.map ((item) => {
+         const initial = item.priceProduct ?? ''
+         const result = Array.from (initial).filter (item => item >= '0' && item <= '9').join('')
+         return result ? parseInt (result, 10) : 0
+      }).reduce ((acc, num) => {
+         return acc + num
+      }, 0)
+
+      console.log(sum)
+      return sum
+   }
 }
-
-// export class ProductModel {  // класс управляет карточками товара
-//    protected items: ProductCard[] = [] 
-
-//    constructor () {
-//       this.items = []
-//    }
-
-//    getProductId (id: number): ProductCard | undefined {  // ищем определенный товар по id
-//       return this.items.find((item) => item.id === id)
-//    }
-// }

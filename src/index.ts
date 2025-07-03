@@ -104,5 +104,13 @@ emitter.on ('basket:itemAdded',(payload: { title: string, price: string}) => {
 	if (basketManager.isPrice(payload.price)) {
 		basketManager.addProductBasket(payload, basketContent.basketList)
 		modalManager.closeModal()
+		basketContent.finalPriceButton.textContent = `
+		${String(modelManager.getSumOfPrices(basketManager.productList))} синапсов
+		`
 	} 
 })
+
+
+// --------- test -----------
+
+// modelManager
