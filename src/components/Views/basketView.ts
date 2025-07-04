@@ -25,11 +25,17 @@ export class BasketView extends Component<IPreviewCardContent> {
 		// basketList.innerHTML = ''
 	}
 
-	checkButton(button: HTMLButtonElement, basketList: HTMLElement) {
+	isListChildren (basketList: HTMLElement): boolean {
 		const itemsList = Array.from(basketList.children).filter(
 			(item) => !item.classList.contains('card__text')
 		);
-		if (!basketList || itemsList.length === 0) {
+
+		if (itemsList.length === 0) return true
+		return false
+	}
+
+	checkButton(button: HTMLButtonElement, basketList: HTMLElement) {
+		if (this.isListChildren(basketList)) {
 			basketList.innerHTML = '';
 			this.lockedButton(button);
 				const basketNull = createElement<HTMLParagraphElement>('p', {
@@ -46,21 +52,26 @@ export class BasketView extends Component<IPreviewCardContent> {
 	addProductBasket (data: Partial<IPreviewCardContent>, basketList: HTMLElement) {
 		const addedProduct: SelectedProduct = {
 			nameProduct: data.title,
-			priceProduct: String(data.price)
+			priceProduct: String(data.price),
+			id: String(data.id)
 		}
 		this.productList.push(addedProduct)
-		// console.log(this.productList)
+		console.log(this.productList)
 
 		this.renderProduct(data, basketList)
 	}
 
+
 	private renderProduct (data: Partial<IPreviewCardContent>, basketList: HTMLElement) {
 		const template = document.querySelector('[data-id="addedProductTemplate"]') as HTMLTemplateElement
 		const clone = template?.content.cloneNode(true) as HTMLElement
-
+		const item = clone.querySelector('[ data-id="basketItem"]') as HTMLElement
+		item.dataset.itemId = String(data.id)
+		// console.log(item)
 		clone.querySelector('[data-id="basketCardTtitle"]').textContent = data.title
 		clone.querySelector('[data-id="basketCardPrice"]').textContent = data.price
 		clone.querySelector('[data-id="basketIndex"]').textContent = String(this.productList.length)
+		
 
 		basketList.appendChild(clone)
 	}

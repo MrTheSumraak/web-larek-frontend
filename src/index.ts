@@ -16,12 +16,15 @@ import {
 	CatalogtemplateItems,
 	PreviewTemplateItems,
 } from './components/Views/Templates/templateItems';
-import { ProductCard } from './types';
+import { ICurrentCardClass, ProductCard } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
 import { ensureElement } from './utils/utils';
+import { SearchElementsCurrentCard } from './components/Views/CurrentCardView';
+import { objCardClass, objLiClass } from './components/Views/objClass';
 
 // --------- константы
 
+{
 const modalContainer = ensureElement<HTMLElement>('#modal-container');
 const main = ensureElement<HTMLElement>('[data-id="main"]');
 
@@ -37,9 +40,8 @@ const emitter = new EventEmitter();
 const basketContent = new BasketTemplateItems(templateInicilization.basketTemplate);
 const previewContent = new PreviewTemplateItems(templateInicilization.previewTemplate);
 const productItems = new CatalogtemplateItems(templateInicilization.catalogTemplate);
-const addedProduct = new AddedProductTemplateItems(templateInicilization.addedProductTemplate)
+// const addedProduct = new AddedProductTemplateItems(templateInicilization.addedProductTemplate)
 
-// console.log(previewContent.cardButtonPreview)
 // менеджеры 
 const modalManager = new ModalWindow(modalContainer, emitter);
 const apiManager = new Api(API_URL);
@@ -48,7 +50,7 @@ const modelManager = new Model(apiManager, emitter);
 
 const previewCardContent = new PreviewCardContent(productItems, previewContent);
 
-// ------- логика
+// ------- реализация
 
 window.addEventListener('DOMContentLoaded', () => {
 	modelManager.getCards();
@@ -62,7 +64,7 @@ emitter.on('cards:loading', (products: ProductCard[]) => {
 		emitter
 	);
 	product.renderProductList(main);
-	console.log(products);
+	// console.log(products);
 });
 
 emitter.on('basket:on', () => {
@@ -72,44 +74,85 @@ emitter.on('basket:on', () => {
 		basketContent.makingOrderButton,
 		basketContent.basketList
 	);
+
+	basketContent.basketList.addEventListener ('click', (ev) => {
+		const target = ev.target as HTMLElement
+		if (target.matches('[data-id="basketItemDeleteButton"]')) {
+         emitter.emit('remove:element', ev);
+   }
+	})
+
+	basketContent.makingOrderButton.addEventListener ('click', () => {
+		emitter.emit ('placeOrder:product')
+	}, { once: true })
 });
 
 emitter.on('cardPreview:on', (ev: MouseEvent) => {
-	const target = ev.target as HTMLElement;
-	const cardEl = target.closest('.card') as HTMLElement;
+	const cardEl = basketManager.getClosestElement(ev, '.card')
+	const currentId = cardEl.dataset.idPersonal
 
 	if (!cardEl) return;
 
-	const category = cardEl.querySelector('.card__category')?.textContent ?? '';
-	const title = cardEl.querySelector('.card__title')?.textContent ?? '';
-	const img = cardEl.querySelector('.card__image')?.getAttribute('src') ?? '';
-	const price = cardEl.querySelector('.card__price')?.textContent ?? '';
+	const currentCardElement = new SearchElementsCurrentCard (cardEl, objCardClass)
+	// console.log(`элементы текущей карточки': ${currentCardElement.category}, ${currentCardElement.price}, ${currentCardElement.title}`)
 	const cardDescription = cardEl.dataset.description
-	previewCardContent.setContent({ category, title, img, price, cardDescription });
+	previewCardContent.setContent({
+  		category: currentCardElement.category,
+  		title: currentCardElement.title,
+		img: currentCardElement.img,
+  		price: currentCardElement.price,
+  		cardDescription: cardDescription
+	});
 	modalManager.setContent(previewContent.cardFull);
 	modalManager.render();
 
-	if (!basketManager.isPrice(price)) {
+	if (!basketManager.isPrice(currentCardElement.price, 'бесценно')) {
       basketManager.lockedButton(previewContent.cardButtonPreview);
    } else {
       basketManager.unLocked(previewContent.cardButtonPreview);
    }
 
 	previewContent.cardButtonPreview.addEventListener('click', () => {
-		emitter.emit ('basket:itemAdded', { title, price})
+		emitter.emit ('basket:itemAdded', {
+  			title: currentCardElement.title,
+  			price: currentCardElement.price,
+			id: currentId
+})
 	}, { once: true })
 });
 
-emitter.on ('basket:itemAdded',(payload: { title: string, price: string}) => {
-	if (basketManager.isPrice(payload.price)) {
+emitter.on ('basket:itemAdded',(payload: { title: string, price: string, id: string}) => {
+	if (basketManager.isPrice(payload.price, 'бесценно')) {
 		basketManager.addProductBasket(payload, basketContent.basketList)
 		modalManager.closeModal()
-		basketContent.finalPriceButton.textContent = `
+		basketContent.finalPriceButton.textContent = 
+		`
 		${String(modelManager.getSumOfPrices(basketManager.productList))} синапсов
 		`
 	} 
 })
 
+emitter.on ('remove:element', (ev: MouseEvent) => {
+	const currentElement = basketManager.getClosestElement(ev, '[data-id="basketItem"]')
+	basketManager.removeDomElement<HTMLElement>(currentElement)
+
+	const currentId = currentElement.dataset.itemId
+
+	const index = basketManager.productList.findIndex (item => item.id === currentId)
+	if (index !== -1) {
+		basketManager.productList.splice(index, 1)
+		modelManager.upDateIndex(basketContent.basketList, objLiClass)
+		return
+	} else {
+		console.log(`товар ${currentElement} не был удален`)
+		console.log(basketManager.productList)
+	}
+})
+
+emitter.on ('placeOrder:product', () => {
+	console.log('hello')
+})
+}
 
 // --------- test -----------
 

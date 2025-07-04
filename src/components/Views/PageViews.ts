@@ -18,7 +18,7 @@ export class PageView {
 	}
 
 	check() {
-		console.log(this.product);
+		// console.log(this.product);
 	}
 		
 	renderProductList(main: HTMLElement) {

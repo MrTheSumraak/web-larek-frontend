@@ -10,19 +10,35 @@ export abstract class Component<T> {
 
     // Инструментарий для работы с DOM в дочерних компонентах
 
+    // заблокировать кнопку
     lockedButton(button: HTMLButtonElement) {
 		button.disabled = true;
 		button.classList.add('button_alt-disable');
 	}
 
+    // разблокировать кнопку
 	unLocked(button: HTMLButtonElement) {
 		button.disabled = false;
 		button.classList.remove('button_alt-disable');
 	}
 
-    isPrice (price: string): boolean {
-		return !price.trim().toLowerCase().includes('бесценно');
+    // проверка текстового содержимого элемента на определенную строку
+    isPrice (price: string, checkToString: string): boolean {
+		return !price.trim().toLowerCase().includes(checkToString);
 	}
+
+    getClosestElement (ev: MouseEvent, className: string): HTMLElement {
+        const target = ev.target as HTMLElement;
+	    const cardEl = target.closest(className) as HTMLElement;
+        return cardEl
+    }
+
+    // метод удаляет элемент из DOM дерева
+    removeDomElement<T extends HTMLElement> (element: T) {
+        if (element) {
+            element.remove()
+        }
+    }
 
     // Переключить класс
     toggleClass(element: HTMLElement, className: string, force?: boolean) {

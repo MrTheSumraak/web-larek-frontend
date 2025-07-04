@@ -63,7 +63,8 @@ export interface IPreviewCardContent {
 	title: string;
 	img: string;
 	price: string;
-	cardDescription: string;
+	cardDescription?: string;
+	id?: string;
 }
 
 export interface IModalData {
@@ -76,11 +77,20 @@ export interface IModalData {
 	price: HTMLElement;
 }
 
+export interface ICurrentCardClass {
+	item?: string,
+   title?: string,
+   category?: string,
+   img?: string,
+   price?: string,
+	index?: string
+}
+
 export interface ProductCard {
 	// интерфейс карточки товара, содержащий в себе:
 	category: string; // категория товара
-	description: string; // описание карточки(софт-скилл, дополнительное, кнопка и тд)
-	id: string; // id-шник карточки, куда же без него
+	description?: string; // описание карточки(софт-скилл, дополнительное, кнопка и тд)
+	id?: string; // id-шник карточки, куда же без него
 	image: string;
 	price: number | null; // цена карточки, т.е товара
 	title: string; // название
@@ -103,10 +113,11 @@ export interface ProductAddPopup extends ProductCard, CloseModalButton {
 
 export interface SelectedProduct {
 	// выбранный продукт, представим его массивом объектов, в котором:
-	sequenceNumber?: number ; // порядковый номер
+	sequenceNumber?: string ; // порядковый номер
 	nameProduct: string ; // название продукта
 	priceProduct:  string ; // его цена
 	deleteProduct?: string | HTMLButtonElement; // ну и кнопка удаления продукта из корзины
+	id: string
 };
 
 export interface OrderBasketPopup extends CloseModalButton, SelectedProduct {

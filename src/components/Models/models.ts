@@ -1,4 +1,4 @@
-import { ProductCard, ProductResponse, SelectedProduct } from "../../types";
+import { ICurrentCardClass, ProductCard, ProductResponse, SelectedProduct } from "../../types";
 import { Api } from "../base/api";
 import { EventEmitter } from "../base/events";
 
@@ -15,7 +15,7 @@ export class Model {
    getCards () {
       this.apiContent.get<ProductResponse>('/product').then(data => {
          this.items = data.items
-         console.log(data.items)
+         // console.log(data.items)
 
          this.emmiter.emit('cards:loading', this.items)
       })
@@ -30,7 +30,18 @@ export class Model {
          return acc + num
       }, 0)
 
-      console.log(sum)
+      // console.log(sum)
       return sum
+   }
+
+   upDateIndex (list: HTMLElement, obj: ICurrentCardClass) {
+      const items = Array.from(list.querySelectorAll(obj.item))
+
+      items.forEach ((el, index) => {
+         const li = el.querySelector(obj.index) as HTMLElement
+         if (li) {
+            li.textContent = String(index + 1)
+         }
+      })
    }
 }

@@ -1,7 +1,5 @@
 import { ICardCatalogItems, IPreviewItems, IPreviewCardContent } from "../../types";
 
-
-
 export class PreviewCardContent {
 
    protected cardContent: ICardCatalogItems
