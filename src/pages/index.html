@@ -273,26 +273,12 @@
 			<div class="basket" data-id="basketInside">
 				<h2 class="modal__title" data-id="basketTitle">Корзина</h2>
 				<ul class="basket__list" data-id="basketListTemplate">
-					<!-- <li class="basket__item card card_compact" data-id="basketItem">
-						<span class="basket__item-index" data-id="basketIndex">1</span>
-						<span class="card__title" data-id="basketCardTtitle"
-							>Фреймворк куки судьбы</span
-						>
-						<span class="card__price" data-id="basketCardPrice"
-							>2500 синапсов</span
-						>
-						<button
-							class="basket__item-delete card__button"
-							aria-label="удалить"
-							data-id="basketItemDeleteButton"
-						></button>
-					</li> -->
 				</ul>
 				<div class="modal__actions">
 					<button class="button basket__button" data-id="makingOrderButton">
 						Оформить
 					</button>
-					<span class="basket__price" data-id="finalPriceButton"
+					<span class="basket__price" data-id="finalPrice"
 						>0 синапсов</span
 					>
 				</div>
@@ -330,24 +316,28 @@
 							class="form__input"
 							type="text"
 							placeholder="Введите адрес"
+							pattern="^[a-zA-Zа-яА-ЯёЁ0-9\s.,\-\/]{5,100}$"
+							id="adress"
+							data-error-message="Введенный адрес неккоректен"
 							data-id="formInputAdress"
+							data-error-for="address"
 						/>
 					</label>
+					<!-- pattern="[a-zA-zа-яА-яёЁ\s\-]+$" -->
 				</div>
 				<div class="modal__actions">
 					<button
 						type="submit"
-						disabled
-						class="button order__button"
+						class="button order__button form__submit"
 						data-id="submitButtonFurther"
 					>
 						Далее
 					</button>
-					<span class="form__errors" data-id="errorSpanAdress"></span>
+					<span class="form__errors adress-error" data-id="errorSpanAdress">привет</span>
 				</div>
 			</form>
 		</template>
-
+<!--  -->
 		<template id="contacts" data-id="contactsTemplate">
 			<form class="form" name="contacts" data-id="formContacts">
 				<div class="order">
@@ -358,6 +348,9 @@
 							class="form__input"
 							type="text"
 							placeholder="Введите Email"
+							pattern="^\S+@\S+\.\S+$"
+							id="email"
+							data-error-message="Веденный email не корректен"
 							data-id="emailInput"
 						/>
 					</label>
@@ -367,7 +360,10 @@
 							name="phone"
 							class="form__input"
 							type="text"
+							id="phone"
 							placeholder="+7 ("
+							pattern="^((8|\+374|\+994|\+995|\+375|\+7|\+380|\+38|\+996|\+998|\+993)[\- ]?)?\(?\d{3,5}\)?[\- ]?\d{1}[\- ]?\d{1}[\- ]?\d{1}[\- ]?\d{1}[\- ]?\d{1}(([\- ]?\d{1})?[\- ]?\d{1})?$"
+							data-error-message="Веденный телефон не корректен"
 							data-id="phoneInput"
 						/>
 					</label>
@@ -375,13 +371,12 @@
 				<div class="modal__actions">
 					<button
 						type="submit"
-						disabled
-						class="button"
+						class="button form__submit" 
 						data-id="submitButtonContacts"
 					>
 						Оплатить
 					</button>
-					<span class="form__errors" data-id="errorSpanContacts"></span>
+					<span class="form__errors email-error phone-error" data-id="errorSpanContacts"></span>
 				</div>
 			</form>
 		</template>

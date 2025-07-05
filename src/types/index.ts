@@ -77,6 +77,15 @@ export interface IModalData {
 	price: HTMLElement;
 }
 
+export interface IValidationConfig {
+	formSelector: string;
+	inputSelector: string;
+	submitButtonSelector: string;
+	inactiveButtonClass: string;
+	inputErrorClass?: string;
+	errorClass?: string;
+}
+
 export interface ICurrentCardClass {
 	item?: string,
    title?: string,

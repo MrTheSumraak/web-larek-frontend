@@ -6,7 +6,8 @@ import { EventEmitter } from '../base/events';
 
 export class BasketView extends Component<IPreviewCardContent> {
 	basketButton: HTMLButtonElement;
-	productList: SelectedProduct[]
+	productList: SelectedProduct[];
+	// private basketIds: Set<string>;
 
 	constructor(emiter: EventEmitter, container?: HTMLElement) {
 		super (container)
@@ -19,6 +20,7 @@ export class BasketView extends Component<IPreviewCardContent> {
 		}
 
 		this.productList = []
+		// this.basketIds = new Set()
 	}
 
 	clearBasket() {
@@ -34,7 +36,7 @@ export class BasketView extends Component<IPreviewCardContent> {
 		return false
 	}
 
-	checkButton(button: HTMLButtonElement, basketList: HTMLElement) {
+	checkBasketButton(button: HTMLButtonElement, basketList: HTMLElement) {
 		if (this.isListChildren(basketList)) {
 			basketList.innerHTML = '';
 			this.lockedButton(button);
@@ -43,11 +45,15 @@ export class BasketView extends Component<IPreviewCardContent> {
 				});
 				basketNull.className = 'card__text';
 				basketList.appendChild(basketNull);
-				// console.log(basketList);
-		} else {
-			this.unLocked(button);
+		} else this.unLocked(button);
+	}
+
+	clearTotalIfBasketEmpty (basketList: HTMLElement, el: HTMLElement) {
+		if (this.isListChildren(basketList)) {
+			el.textContent = '0 синапсов'
 		}
 	}
+
 
 	addProductBasket (data: Partial<IPreviewCardContent>, basketList: HTMLElement) {
 		const addedProduct: SelectedProduct = {
@@ -56,6 +62,7 @@ export class BasketView extends Component<IPreviewCardContent> {
 			id: String(data.id)
 		}
 		this.productList.push(addedProduct)
+		// this.basketIds.add(String(data.id))
 		console.log(this.productList)
 
 		this.renderProduct(data, basketList)

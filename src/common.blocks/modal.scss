@@ -16,6 +16,7 @@
   &_active {
     display: flex;
     position: fixed;
+
   }
 
   &__container {
@@ -43,6 +44,10 @@
     @include mixins.flex(row);
     align-items: center;
     gap: 2rem;
+    
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
   }
 
   &__close {

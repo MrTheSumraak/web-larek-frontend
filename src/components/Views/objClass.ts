@@ -9,5 +9,6 @@ export const objCardClass: ICurrentCardClass = {
 
 export const objLiClass: ICurrentCardClass = {
 	item: '[data-id="basketItem"]',
-	index: '[data-id="basketIndex"]'
+	index: '[data-id="basketIndex"]',
+   price: '[data-id="finalPrice"]'
 }

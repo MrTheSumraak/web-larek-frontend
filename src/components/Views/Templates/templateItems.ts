@@ -125,7 +125,7 @@ export class BasketTemplateItems extends CloneTemplate implements IBasketItems {
 	basketTitle: HTMLElement;
 	basketList: HTMLElement;
 	makingOrderButton: HTMLButtonElement;
-	finalPriceButton: HTMLElement;
+	finalPrice: HTMLElement;
 
 	constructor(template: HTMLTemplateElement) {
 		super(template);
@@ -137,8 +137,8 @@ export class BasketTemplateItems extends CloneTemplate implements IBasketItems {
 		this.makingOrderButton = this.basketInside.querySelector(
 			'[data-id="makingOrderButton"]'
 		);
-		this.finalPriceButton = this.basketInside.querySelector(
-			'[data-id="finalPriceButton"]'
+		this.finalPrice = this.basketInside.querySelector(
+			'[data-id="finalPrice"]'
 		);
 	}
 }

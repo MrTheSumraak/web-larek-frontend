@@ -24,13 +24,14 @@ export abstract class Component<T> {
 
     // проверка текстового содержимого элемента на определенную строку
     isPrice (price: string, checkToString: string): boolean {
-		return !price.trim().toLowerCase().includes(checkToString);
+		return price.trim().toLowerCase().includes(checkToString);
 	}
 
-    getClosestElement (ev: MouseEvent, className: string): HTMLElement {
-        const target = ev.target as HTMLElement;
+    // метод возвращает ближайший HTMLElement с заданным классом
+    getClosestElement<T extends HTMLElement> (ev: MouseEvent, className: string): T {
+        const target = ev.target as T;
 	    const cardEl = target.closest(className) as HTMLElement;
-        return cardEl
+        return cardEl as T
     }
 
     // метод удаляет элемент из DOM дерева
