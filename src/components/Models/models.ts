@@ -1,71 +1,130 @@
-import { ICurrentCardClass, ProductCard, ProductResponse, SelectedProduct } from "../../types";
-import { ensureElement } from "../../utils/utils";
-import { Api } from "../base/api";
-import { EventEmitter } from "../base/events";
+import { ICurrentCardClass, IOrder, SelectedProduct } from '../../types';
+import { ensureElement } from '../../utils/utils';
+import { EventEmitter } from '../base/events';
 
 export class Model {
-   protected apiContent: Api
-   protected items: ProductCard[]
-   protected emmiter: EventEmitter
+	protected emmiter: EventEmitter;
+	private basketIds: Set<string> = new Set();
+	basketProducts: SelectedProduct[] = [];
 
-   constructor (api: Api, emmiter: EventEmitter) {
-      this.apiContent = api
-      this.emmiter = emmiter
-   }
+	getBasketProducts(): SelectedProduct[] {
+		return this.basketProducts;
+	}
 
-   getCards () {
-      this.apiContent.get<ProductResponse>('/product').then(data => {
-         this.items = data.items
-         // console.log(data.items)
+	isInBasket(id: string): boolean {
+		return this.basketIds.has(id);
+	}
 
-         this.emmiter.emit('cards:loading', this.items)
-      })
-   }
+	addProductToBasket(product: SelectedProduct): boolean {
+		if (this.basketIds.has(product.id)) return false;
 
-   getSumOfPrices (productList: SelectedProduct[]): number {
-      const sum = productList.map ((item) => {
-         const initial = item.priceProduct ?? ''
-         const result = Array.from (initial).filter (item => item >= '0' && item <= '9').join('')
-         return result ? parseInt (result, 10) : 0
-      }).reduce ((acc, num) => {
-         return acc + num
-      }, 0)
+		this.basketIds.add(product.id);
+		this.basketProducts.push(product);
+		return true;
+	}
 
-      // console.log(sum)
-      return sum
-   }
+	handleOnceOrMoreClick(
+		ev: MouseEvent,
+		method: (btn: HTMLButtonElement) => void
+	) {
+		const btn = ev.currentTarget as HTMLButtonElement;
+		const count = parseInt(btn.dataset.clicks ?? '0', 10) + 1;
+		btn.dataset.clicks = String(count);
 
-   upDateIndexAndPrice<T extends HTMLElement> (list: HTMLElement, obj: ICurrentCardClass, productList: SelectedProduct[]): void {
-      const items = Array.from(list.querySelectorAll(obj.item))
+		if (count > 0) {
+			method(btn);
+		}
+	}
 
-      items.forEach ((el, index) => {
-         const li = el.querySelector(obj.index) as T
-         const price = ensureElement(obj.price) as T
-         if (li) {
-            li.textContent = String(index + 1)
-         } 
-         if (price) {
-            price.textContent =`${String(this.getSumOfPrices (productList))} синапсов`
-         }
-      })
-   }
+	isClassBtn(
+		btn: HTMLButtonElement,
+		metodLock: (btnLock: HTMLButtonElement) => void,
+		btnLock: HTMLButtonElement,
+		metodUnLock: (btnLock: HTMLButtonElement) => void
+	) {
+		if (!btn.classList.contains('button_alt-active')) {
+			metodLock(btnLock);
+		}
+		metodUnLock(btnLock);
+	}
 
-   // upDatePrice (list: HTMLElement, obj: ICurrentCardClass) {
-   //    const items = Array.from(list.querySelectorAll(obj.item))
+	removeProductById(
+		currentId: string,
+		list: HTMLElement,
+		objClass: ICurrentCardClass
+	) {
+		const index = this.basketProducts.findIndex(
+			(item) => item.id === currentId
+		);
+		if (index !== -1) {
+			this.basketProducts.splice(index, 1);
+			this.basketIds.delete(currentId);
+			this.upDateIndexAndPrice(list, objClass, this.basketProducts);
+		}
+	}
 
-   // }
+	getSumOfPrices(productList: SelectedProduct[]): number {
+		return productList
+			.map((item) => {
+				const digits = (item.priceProduct ?? '')
+					.split('')
+					.filter((ch) => ch >= '0' && ch <= '9')
+					.join('');
+				return digits ? parseInt(digits, 10) : 0;
+			})
+			.reduce((acc, num) => acc + num, 0);
+	}
 
+	upDateIndexAndPrice<T extends HTMLElement>(
+		list: HTMLElement,
+		obj: ICurrentCardClass,
+		productList: SelectedProduct[]
+	): void {
+		const items = Array.from(list.querySelectorAll(obj.item));
+		items.forEach((el, index) => {
+			const li = el.querySelector(obj.index) as T;
+			const price = ensureElement(obj.price) as T;
+			if (li) li.textContent = String(index + 1);
+			if (price)
+				price.textContent = `${this.getSumOfPrices(productList)} синапсов`;
+		});
+	}
+}
 
+export class OrderCurrent {
+	order: IOrder;
 
-   removeProductById (array: SelectedProduct [], currentId: string, list: HTMLElement, objClass: ICurrentCardClass, productList: SelectedProduct[]) {
-      const index = array.findIndex (item => item.id === currentId)
-         if (index !== -1) {
-            array.splice(index, 1)
-   //          if (this.basketIds) {
-   //             this.basketIds.delete(currentId);
-   //  }
-            this.upDateIndexAndPrice(list, objClass, productList)
-            return
-         }
-   }
+	constructor() {
+		this.order = {
+			address: '',
+			email: '',
+			payment: 'card',
+			phone: '',
+			total: 0,
+			items: [],
+		};
+	}
+
+	set(values: Partial<IOrder>) {
+		this.order = {
+			...this.order,
+			...values,
+		};
+	}
+
+	getCurrentId(list: SelectedProduct[], arr: string[]): string[] {
+		list.forEach((el) => {
+			arr.push(el.id);
+		});
+
+		return this.order.items;
+	}
+
+	// getCurrentTotalPrice(): number {
+		
+	// }
+
+	get() {
+		return this.order;
+	}
 }

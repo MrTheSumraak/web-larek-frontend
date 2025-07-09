@@ -50,10 +50,10 @@ export class Validation {
 
 	private hasInvalidInput(inputList: HTMLInputElement[]): boolean {
 		return inputList.some((inputElement: HTMLInputElement) => {
-			return !inputElement.validity.valid ;
+			return !inputElement.validity.valid || inputElement.value.trim() === '';
 		});
 	}
-   // || inputElement.value.trim() === ''
+   // 
 
 	private toggleButtonState(
 		inputList: HTMLInputElement[],

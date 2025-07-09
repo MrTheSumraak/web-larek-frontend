@@ -179,4 +179,13 @@ export interface BasketModel<T> {
 	getTotalPrice(): number; // метод считает итоговую сумму всех товаров
 }
 
+export interface IOrder {
+	address: string,
+	phone: string,
+	email: string,
+	payment: 'card',
+	total: string | number,
+	items: string []
+}
+
 // пока так, накидал основную часть

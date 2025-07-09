@@ -17,30 +17,6 @@ export abstract class CloneTemplate {
 	}
 }
 
-export class SuccessTemplateItems
-	extends CloneTemplate
-	implements ISuccessItems
-{
-	orderSuccess: HTMLElement;
-	orderSuccesstitle: HTMLElement;
-	orderSuccessDescription: HTMLElement;
-	orderSuccessButton: HTMLButtonElement;
-
-	constructor(template: HTMLTemplateElement) {
-		super(template);
-		this.orderSuccess = this.clone.querySelector('[data-id="orderSuccess"]');
-		this.orderSuccesstitle = this.orderSuccess.querySelector(
-			'[data-id="orderTitle"]'
-		);
-		this.orderSuccessDescription = this.orderSuccess.querySelector(
-			'[data-id="amountMoneyDebited"]'
-		);
-		this.orderSuccessButton = this.orderSuccess.querySelector(
-			'[data-id="orderSuccessButton"]'
-		);
-	}
-}
-
 export class CatalogtemplateItems extends CloneTemplate implements ICardCatalogItems {
    galleryItemButton: HTMLButtonElement
 	cardCategory: HTMLElement
@@ -193,6 +169,30 @@ export class ContactsTemplateItems
 		);
 		this.errorSpanContacts = this.formContacts.querySelector(
 			'[data-id="errorSpanContacts"]'
+		);
+	}
+}
+
+export class SuccessTemplateItems
+	extends CloneTemplate
+	implements ISuccessItems
+{
+	orderSuccess: HTMLElement;
+	orderSuccesstitle: HTMLElement;
+	orderSuccessDescription: HTMLElement;
+	orderSuccessButton: HTMLButtonElement;
+
+	constructor(template: HTMLTemplateElement) {
+		super(template);
+		this.orderSuccess = this.clone.querySelector('[data-id="orderSuccess"]');
+		this.orderSuccesstitle = this.orderSuccess.querySelector(
+			'[data-id="orderTitle"]'
+		);
+		this.orderSuccessDescription = this.orderSuccess.querySelector(
+			'[data-id="amountMoneyDebited"]'
+		);
+		this.orderSuccessButton = this.orderSuccess.querySelector(
+			'[data-id="orderSuccessButton"]'
 		);
 	}
 }

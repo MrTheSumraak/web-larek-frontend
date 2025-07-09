@@ -26,7 +26,7 @@
 						/>
 					</a>
 					<button class="header__basket" data-id="basketOn">
-						<span class="header__basket-counter">0</span>
+						<span class="header__basket-counter" data-id="basketCounter">0</span>
 					</button>
 				</div>
 			</header>
@@ -243,7 +243,7 @@
 						Если планируете решать задачи в тренажёре - берите два.
 					</p>
 					<div class="card__row">
-						<button class="button card__button" data-id="cardButtonPreview">
+						<button class="button card__button" data-id="cardButtonPreview" data-clicks="0">
 							В корзину
 						</button>
 						<span class="card__price" data-id="cardPricePreview"
@@ -294,7 +294,7 @@
 							<button
 								name="card"
 								type="button"
-								class="button button_alt"
+								class="button button_alt button_alt-active"
 								data-id="buttonOnline"
 							>
 								Онлайн
@@ -302,7 +302,7 @@
 							<button
 								name="cash"
 								type="button"
-								class="button button_alt"
+								class="button button_alt "
 								data-id="buttonCash"
 							>
 								При получении
