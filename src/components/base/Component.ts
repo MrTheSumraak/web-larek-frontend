@@ -1,9 +1,8 @@
-import {IEvents} from "./events";
 
 /**
  * Базовый компонент
  */
-export abstract class Component<T> {
+export abstract class Component<T = string> {
     protected constructor(protected readonly container: HTMLElement) {
         // Учитывайте что код в конструкторе исполняется ДО всех объявлений в дочернем классе
     }
@@ -17,7 +16,7 @@ export abstract class Component<T> {
 	}
 
     // разблокировать кнопку
-	unLocked(button: HTMLButtonElement) {
+	unLockedButton(button: HTMLButtonElement) {
 		button.disabled = false;
 		button.classList.remove('button_alt-disable');
 	}

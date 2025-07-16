@@ -1,130 +1,65 @@
-import { ICurrentCardClass, IOrder, SelectedProduct } from '../../types';
-import { ensureElement } from '../../utils/utils';
+import { SelectedProduct } from '../../types';
+import { createElement } from '../../utils/utils';
+import { Component } from '../base/Component';
 import { EventEmitter } from '../base/events';
 
-export class Model {
-	protected emmiter: EventEmitter;
+export class Model extends Component {
+	protected emitter: EventEmitter;
 	private basketIds: Set<string> = new Set();
-	basketProducts: SelectedProduct[] = [];
+	private basketProducts: SelectedProduct[] = [];
+
+	constructor(emitter: EventEmitter, container?: HTMLElement) {
+		super(container)
+		this.emitter = emitter;
+	}
 
 	getBasketProducts(): SelectedProduct[] {
 		return this.basketProducts;
 	}
 
-	isInBasket(id: string): boolean {
-		return this.basketIds.has(id);
-	}
-
-	addProductToBasket(product: SelectedProduct): boolean {
-		if (this.basketIds.has(product.id)) return false;
-
+	addProduct(product: SelectedProduct): void {
+		if (this.basketIds.has(product.id)) return;
 		this.basketIds.add(product.id);
 		this.basketProducts.push(product);
-		return true;
+		this.emitter.emit('basket:change', this.basketProducts);
 	}
 
-	handleOnceOrMoreClick(
-		ev: MouseEvent,
-		method: (btn: HTMLButtonElement) => void
-	) {
-		const btn = ev.currentTarget as HTMLButtonElement;
-		const count = parseInt(btn.dataset.clicks ?? '0', 10) + 1;
-		btn.dataset.clicks = String(count);
-
-		if (count > 0) {
-			method(btn);
-		}
+	removeProduct(id: string): void {
+		this.basketProducts = this.basketProducts.filter((p) => p.id !== id);
+		this.basketIds.delete(id);
+		this.emitter.emit('basket:change', this.basketProducts);
 	}
 
-	isClassBtn(
-		btn: HTMLButtonElement,
-		metodLock: (btnLock: HTMLButtonElement) => void,
-		btnLock: HTMLButtonElement,
-		metodUnLock: (btnLock: HTMLButtonElement) => void
-	) {
-		if (!btn.classList.contains('button_alt-active')) {
-			metodLock(btnLock);
-		}
-		metodUnLock(btnLock);
+	clearBasket(): void {
+		this.basketProducts = [];
+		this.basketIds.clear();
+		this.emitter.emit('basket:change', this.basketProducts);
 	}
 
-	removeProductById(
-		currentId: string,
-		list: HTMLElement,
-		objClass: ICurrentCardClass
-	) {
-		const index = this.basketProducts.findIndex(
-			(item) => item.id === currentId
+	isListChildren(basketList: HTMLElement): boolean {
+		const itemsList = Array.from(basketList.children).filter(
+			(item) => !item.classList.contains('card__text')
 		);
-		if (index !== -1) {
-			this.basketProducts.splice(index, 1);
-			this.basketIds.delete(currentId);
-			this.upDateIndexAndPrice(list, objClass, this.basketProducts);
-		}
+
+		if (itemsList.length === 0) return true;
+		return false;
 	}
 
-	getSumOfPrices(productList: SelectedProduct[]): number {
-		return productList
-			.map((item) => {
-				const digits = (item.priceProduct ?? '')
-					.split('')
-					.filter((ch) => ch >= '0' && ch <= '9')
-					.join('');
-				return digits ? parseInt(digits, 10) : 0;
-			})
-			.reduce((acc, num) => acc + num, 0);
+	checkBasketButton(button: HTMLButtonElement, basketList: HTMLElement) {
+		if (this.isListChildren(basketList)) {
+			this.lockedButton(button);
+			const basketNull = createElement<HTMLParagraphElement>('p', {
+				textContent: 'Корзина пуста',
+			});
+			basketNull.className = 'card__text';
+			basketList.appendChild(basketNull);
+		} else this.unLockedButton(button);
 	}
 
-	upDateIndexAndPrice<T extends HTMLElement>(
-		list: HTMLElement,
-		obj: ICurrentCardClass,
-		productList: SelectedProduct[]
-	): void {
-		const items = Array.from(list.querySelectorAll(obj.item));
-		items.forEach((el, index) => {
-			const li = el.querySelector(obj.index) as T;
-			const price = ensureElement(obj.price) as T;
-			if (li) li.textContent = String(index + 1);
-			if (price)
-				price.textContent = `${this.getSumOfPrices(productList)} синапсов`;
-		});
-	}
-}
-
-export class OrderCurrent {
-	order: IOrder;
-
-	constructor() {
-		this.order = {
-			address: '',
-			email: '',
-			payment: 'card',
-			phone: '',
-			total: 0,
-			items: [],
-		};
-	}
-
-	set(values: Partial<IOrder>) {
-		this.order = {
-			...this.order,
-			...values,
-		};
-	}
-
-	getCurrentId(list: SelectedProduct[], arr: string[]): string[] {
-		list.forEach((el) => {
-			arr.push(el.id);
-		});
-
-		return this.order.items;
-	}
-
-	// getCurrentTotalPrice(): number {
-		
-	// }
-
-	get() {
-		return this.order;
+	getTotal(): number {
+		return this.basketProducts.reduce((sum, item) => {
+			const digits = item.priceProduct.replace(/[^\d]/g, '');
+			return sum + (digits ? parseInt(digits, 10) : 0);
+		}, 0);
 	}
 }

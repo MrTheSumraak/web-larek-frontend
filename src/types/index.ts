@@ -123,7 +123,7 @@ export interface ProductAddPopup extends ProductCard, CloseModalButton {
 export interface SelectedProduct {
 	// выбранный продукт, представим его массивом объектов, в котором:
 	sequenceNumber?: string ; // порядковый номер
-	nameProduct: string ; // название продукта
+	title: string ; // название продукта
 	priceProduct:  string ; // его цена
 	deleteProduct?: string | HTMLButtonElement; // ну и кнопка удаления продукта из корзины
 	id: string

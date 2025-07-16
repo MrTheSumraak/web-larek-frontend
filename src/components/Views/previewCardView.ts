@@ -1,13 +1,18 @@
 import { ICardCatalogItems, IPreviewItems, IPreviewCardContent } from "../../types";
+import { EventEmitter } from "../base/events";
 
 export class PreviewCardContent {
 
    protected cardContent: ICardCatalogItems
    protected previewContent: IPreviewItems
 
-   constructor (cardContent: ICardCatalogItems, previewContent: IPreviewItems) {
+   constructor (cardContent: ICardCatalogItems, previewContent: IPreviewItems, emitter: EventEmitter) {
       this.cardContent = cardContent
       this.previewContent = previewContent
+
+      this.previewContent.cardButtonPreview.addEventListener('click', () => {
+         emitter.emit ('basket:install')
+      })
    }
 
    setContent (data: IPreviewCardContent) {
