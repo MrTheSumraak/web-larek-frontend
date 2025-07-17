@@ -58,14 +58,15 @@ export class Validation {
 	private toggleButtonState(
 		inputList: HTMLInputElement[],
 		buttonElement: HTMLButtonElement,
-		validConfig: IValidationConfig
+		validConfig: IValidationConfig,
+		isPaymentMissing: boolean
 	) {
 		if (!buttonElement) {
 			console.warn('Кнопка не найдена, пропускаем toggleButtonState');
 			return;
 		}
 
-		if (this.hasInvalidInput(inputList)) {
+		if (this.hasInvalidInput(inputList) && !isPaymentMissing) {
 			buttonElement.disabled = true;
 			buttonElement.classList.add(validConfig.inactiveButtonClass);
 		} else {
@@ -76,7 +77,8 @@ export class Validation {
 
 	private setEventListeners(
 		formElement: HTMLFormElement,
-		validConfig: IValidationConfig
+		validConfig: IValidationConfig,
+		isPaymentMissing: boolean
 	) {
 		const inputList = Array.from(
 			formElement.querySelectorAll(validConfig.inputSelector)
@@ -85,20 +87,20 @@ export class Validation {
 			validConfig.submitButtonSelector
 		) as HTMLButtonElement;
 		if (validConfig.submitButtonSelector) {
-			this.toggleButtonState(inputList, buttonElement, validConfig);
+			this.toggleButtonState(inputList, buttonElement, validConfig, isPaymentMissing);
 		}
 		inputList.forEach((inputElement) => {
 			inputElement.addEventListener('input', () => {
 				this.isValid(formElement, inputElement, validConfig);
 				// console.log(inputElement);
 				if (validConfig.submitButtonSelector) {
-					this.toggleButtonState(inputList, buttonElement, validConfig);
+					this.toggleButtonState(inputList, buttonElement, validConfig, isPaymentMissing);
 				}
 			});
 		});
 	}
 
-	enableValidation(validConfig: IValidationConfig) {
+	enableValidation(validConfig: IValidationConfig, isPaymentMissing: boolean) {
 		const formList = Array.from(
 			document.querySelectorAll(validConfig.formSelector)
 		);
@@ -108,7 +110,7 @@ export class Validation {
 			formElement.addEventListener('submit', (evt) => {
 				evt.preventDefault();
 			});
-			this.setEventListeners(formElement, validConfig);
+			this.setEventListeners(formElement, validConfig, isPaymentMissing);
 		});
 	}
 

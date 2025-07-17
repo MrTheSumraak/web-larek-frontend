@@ -7,11 +7,12 @@ import { ApiWebLarek } from './components/Models/apiWebLarek';
 import { Model } from './components/Models/models';
 import { Validation } from './components/Models/validation';
 import { BasketItem, BasketView } from './components/Views/basketView';
-import { SearchElementsCurrentCard } from './components/Views/CurrentCardView';
+import { CardPreviewCurrentCard } from './components/Views/CurrentCardView';
 import { FormAdress, FormContacts } from './components/Views/form';
 import { ModalWindow } from './components/Views/modalWidnow';
 import { objCardClass } from './components/Views/objClass';
-import { PageView } from './components/Views/pageViews';
+import { OrderModel } from './components/Views/Order';
+import { PageView } from './components/Views/PageViews';
 import { PreviewCardContent } from './components/Views/previewCardView';
 import { Succes } from './components/Views/succes';
 import { TemplateListView } from './components/Views/Templates/templateInit';
@@ -55,6 +56,15 @@ const previewCardContent = new PreviewCardContent(
 const formAdress = new FormAdress(orderItems.formOrder, emitter);
 const formContacts = new FormContacts(contactsItem.formContacts, emitter);
 const succes = new Succes(successItems.orderSuccess, emitter);
+const setOrder = new OrderModel();
+
+apiWebLarek
+	.getCards()
+	.then((items) => {
+		modelManager.setItems = items;
+		emitter.emit('cards:loading', modelManager.responceItems);
+	})
+	.catch((err) => console.warn(`${err}`));
 
 emitter.on('cards:loading', (products: ProductCard[]) => {
 	const product = new PageView(
@@ -66,23 +76,21 @@ emitter.on('cards:loading', (products: ProductCard[]) => {
 	product.renderProductList(main);
 });
 
-let currentCardElement: SearchElementsCurrentCard;
-let currentId: string;
+const cardPreviewCurrentCard = new CardPreviewCurrentCard();
 
 emitter.on('cardPreview:on', (ev: MouseEvent) => {
 	const cardEl = (ev.currentTarget || ev.target) as HTMLElement;
 	if (!cardEl) return;
 
-	currentId = cardEl.dataset.idPersonal;
+	cardPreviewCurrentCard.setCurrentCard(cardEl, objCardClass);
+
 	const cardDescription = cardEl.dataset.description;
 
-	currentCardElement = new SearchElementsCurrentCard(cardEl, objCardClass);
-
 	previewCardContent.setContent({
-		category: currentCardElement.category,
-		title: currentCardElement.title,
-		img: currentCardElement.img,
-		price: currentCardElement.price,
+		category: cardPreviewCurrentCard.currentCardElement.category,
+		title: cardPreviewCurrentCard.currentCardElement.title,
+		img: cardPreviewCurrentCard.currentCardElement.img,
+		price: cardPreviewCurrentCard.currentCardElement.price,
 		cardDescription: cardDescription,
 	});
 
@@ -91,17 +99,23 @@ emitter.on('cardPreview:on', (ev: MouseEvent) => {
 });
 
 emitter.on('basket:install', () => {
-	if (!currentCardElement || !currentId) return;
+	if (
+		!cardPreviewCurrentCard.currentCardElement ||
+		!cardPreviewCurrentCard.currentId
+	)
+		return;
 
-	if (currentCardElement.price.toLowerCase() === 'бесценно') {
+	if (
+		cardPreviewCurrentCard.currentCardElement.price.toLowerCase() === 'бесценно'
+	) {
 		alert('Бесценный товар не может быть добавлен в корзину');
 		return;
 	}
 
 	const product: SelectedProduct = {
-		title: currentCardElement.title,
-		priceProduct: currentCardElement.price,
-		id: currentId,
+		title: cardPreviewCurrentCard.currentCardElement.title,
+		priceProduct: cardPreviewCurrentCard.currentCardElement.price,
+		id: cardPreviewCurrentCard.currentId,
 	};
 
 	emitter.emit('basket:itemAdded', product);
@@ -111,7 +125,7 @@ emitter.on('basket:install', () => {
 emitter.on('basket:on', () => {
 	modalManager.setContent(basketContent.basketInside);
 	modalManager.render();
-	modelManager.checkBasketButton(
+	basketView.checkBasketButton(
 		basketContent.makingOrderButton,
 		basketContent.basketList
 	);
@@ -123,7 +137,7 @@ emitter.on('basket:itemAdded', (product: SelectedProduct) => {
 
 emitter.on('basket:itemRemoved', ({ id }: { id: string }) => {
 	modelManager.removeProduct(id);
-	modelManager.checkBasketButton(
+	basketView.checkBasketButton(
 		basketContent.makingOrderButton,
 		basketContent.basketList
 	);
@@ -131,12 +145,8 @@ emitter.on('basket:itemRemoved', ({ id }: { id: string }) => {
 
 emitter.on('basket:change', (products: SelectedProduct[]) => {
 	const items = products.map((product, index) => {
-		const item = new BasketItem(product, index).getElement();
-		item
-			.querySelector('[data-id="basketItemDeleteButton"]')
-			?.addEventListener('click', () => {
-				emitter.emit('basket:itemRemoved', { id: product.id });
-			});
+		const item = new BasketItem(product, index, emitter).getElement();
+		
 		return item;
 	});
 
@@ -145,9 +155,9 @@ emitter.on('basket:change', (products: SelectedProduct[]) => {
 	basketView.counterValue = products.length;
 
 	if (products.length === 0) {
-		modelManager.lockedButton(basketContent.makingOrderButton);
+		basketView.lockedButton(basketContent.makingOrderButton);
 	} else {
-		modelManager.unLockedButton(basketContent.makingOrderButton);
+		basketView.unLockedButton(basketContent.makingOrderButton);
 	}
 });
 
@@ -155,9 +165,12 @@ emitter.on('order:detailsRequestedAdress', () => {
 	modalManager.setContent(orderItems.formOrder);
 	modalManager.openModal();
 
-	modelManager.lockedButton(orderItems.submitButtonFurther);
+	basketView.lockedButton(orderItems.submitButtonFurther);
 
-	validation.enableValidation(ValidationConfig);
+	validation.enableValidation(
+		ValidationConfig,
+		formAdress.isPaymentSelected(orderItems.buttonOnline, orderItems.buttonCash)
+	);
 });
 
 emitter.on('order:detailsRequestedContacts', () => {
@@ -165,53 +178,44 @@ emitter.on('order:detailsRequestedContacts', () => {
 	modalManager.openModal();
 
 	setTimeout(() => {
-		modelManager.lockedButton(contactsItem.submitButtonContacts);
+		basketView.lockedButton(contactsItem.submitButtonContacts);
 	}, 0);
 
-	validation.enableValidation(ValidationConfig);
+	validation.enableValidation(
+		ValidationConfig,
+		formAdress.isPaymentSelected(orderItems.buttonOnline, orderItems.buttonCash)
+	);
 });
 
 emitter.on('btnChecked:online', () => {
 	orderItems.buttonCash.classList.remove('button_alt-active');
-	modelManager.toggleClass(orderItems.buttonOnline, 'button_alt-active');
-	if (
-		formAdress.isPaymentSelected(orderItems.buttonOnline, orderItems.buttonCash)
-	) {
-		modelManager.unLockedButton(orderItems.submitButtonFurther);
-	} else {
-		modelManager.lockedButton(orderItems.submitButtonFurther);
-	}
+	basketView.toggleClass(orderItems.buttonOnline, 'button_alt-active');
+
+	setOrder.setPayment('online');
 });
 
 emitter.on('btnChecked:cash', () => {
 	orderItems.buttonOnline.classList.remove('button_alt-active');
-	modelManager.toggleClass(orderItems.buttonCash, 'button_alt-active');
-	if (
-		formAdress.isPaymentSelected(orderItems.buttonOnline, orderItems.buttonCash)
-	) {
-		modelManager.unLockedButton(orderItems.submitButtonFurther);
-	} else {
-		modelManager.lockedButton(orderItems.submitButtonFurther);
-	}
+	basketView.toggleClass(orderItems.buttonCash, 'button_alt-active');
+
+	setOrder.setPayment('cash');
 });
 
 emitter.on('order:submit', () => {
 	const order = {
-		address: orderItems.formInputAdress.value,
-		email: contactsItem.emalInput.value,
-		phone: contactsItem.phoneInput.value,
-		payment: orderItems.buttonOnline.classList.contains('button_alt-active')
-			? 'card'
-			: 'cash',
+		address: setOrder.getOrderData().address,
+		email: setOrder.getOrderData().email,
+		phone: setOrder.getOrderData().phone,
+		payment: setOrder.getOrderData().payment,
 		items: modelManager.getBasketProducts().map((p) => p.id),
 		total: modelManager.getTotal(),
 	};
 
 	apiWebLarek
 		.postOrder(order)
-		.then(() => {
+		.then((data: any) => {
 			modalManager.setContent(successItems.orderSuccess);
-			successItems.orderSuccessDescription.textContent = `Списано ${order.total} синапсов`;
+			successItems.orderSuccessDescription.textContent = `Списано ${data.total} синапсов`;
 			modalManager.openModal();
 			modelManager.clearBasket();
 			emitter.on('succes:of', () => {
@@ -221,12 +225,18 @@ emitter.on('order:submit', () => {
 		.catch((err) => console.warn(err));
 });
 
-apiWebLarek
-	.getCards()
-	.then((items) => {
-		emitter.emit('cards:loading', items);
-	})
-	.catch((err) => console.warn(err));
+emitter.on('input:adress', (ev: Event) => {
+	setOrder.setAddress((ev.target as HTMLInputElement).value);
+});
+
+emitter.on('input:email', (ev: InputEvent) => {
+	setOrder.setEmail((ev.target as HTMLInputElement).value);
+});
+
+emitter.on('input:phone', (ev: Event) => {
+	setOrder.setPhone((ev.target as HTMLInputElement).value);
+	console.log(setOrder.data);
+});
 
 // --------- test -----------
 

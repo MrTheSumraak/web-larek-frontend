@@ -1,4 +1,4 @@
-import { ensureElement } from '../../utils/utils';
+import { createElement, ensureElement } from '../../utils/utils';
 import { Component } from '../base/Component';
 import { EventEmitter } from '../base/events';
 import { SelectedProduct } from '../../types';
@@ -46,12 +46,33 @@ export class BasketView extends Component {
 	set counterValue(value: number) {
 		this.counter.textContent = String(value);
 	}
+
+	isListChildren(basketList: HTMLElement): boolean {
+		const itemsList = Array.from(basketList.children).filter(
+			(item) => !item.classList.contains('card__text')
+		);
+
+		if (itemsList.length === 0) return true;
+		return false;
+	}
+
+	checkBasketButton(button: HTMLButtonElement, basketList: HTMLElement) {
+		if (this.isListChildren(basketList)) {
+			basketList.innerHTML = ''
+			this.lockedButton(button);
+			const basketNull = createElement<HTMLParagraphElement>('p', {
+				textContent: 'Корзина пуста',
+			});
+			basketNull.className = 'card__text';
+			basketList.appendChild(basketNull);
+		} else this.unLockedButton(button);
+	}
 }
 
 export class BasketItem {
 	private element: HTMLElement;
 
-	constructor(product: SelectedProduct, index: number) {
+	constructor(product: SelectedProduct, index: number, emitter: EventEmitter,) {
 		const template = document.querySelector(
 			'[data-id="addedProductTemplate"]'
 		) as HTMLTemplateElement;
@@ -68,6 +89,11 @@ export class BasketItem {
 		);
 
 		this.element = item;
+
+		this.getElement()
+			?.addEventListener('click', () => {
+				emitter.emit('basket:itemRemoved', { id: product.id });
+			});
 	}
 
 	getElement(): HTMLElement {

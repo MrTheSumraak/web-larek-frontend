@@ -1,19 +1,24 @@
-import { SelectedProduct } from '../../types';
+import { ProductCard, SelectedProduct } from '../../types';
 import { createElement } from '../../utils/utils';
 import { Component } from '../base/Component';
 import { EventEmitter } from '../base/events';
 
-export class Model extends Component {
+export class Model {
+	responceItems: ProductCard[]
 	protected emitter: EventEmitter;
 	private basketIds: Set<string> = new Set();
 	private basketProducts: SelectedProduct[] = [];
 
-	constructor(emitter: EventEmitter, container?: HTMLElement) {
-		super(container)
+	constructor(emitter: EventEmitter) {
 		this.emitter = emitter;
 	}
 
+	set setItems (value: ProductCard[]) {
+		this.responceItems = value
+	}
+
 	getBasketProducts(): SelectedProduct[] {
+		console.log(this.basketProducts)
 		return this.basketProducts;
 	}
 
@@ -34,26 +39,6 @@ export class Model extends Component {
 		this.basketProducts = [];
 		this.basketIds.clear();
 		this.emitter.emit('basket:change', this.basketProducts);
-	}
-
-	isListChildren(basketList: HTMLElement): boolean {
-		const itemsList = Array.from(basketList.children).filter(
-			(item) => !item.classList.contains('card__text')
-		);
-
-		if (itemsList.length === 0) return true;
-		return false;
-	}
-
-	checkBasketButton(button: HTMLButtonElement, basketList: HTMLElement) {
-		if (this.isListChildren(basketList)) {
-			this.lockedButton(button);
-			const basketNull = createElement<HTMLParagraphElement>('p', {
-				textContent: 'Корзина пуста',
-			});
-			basketNull.className = 'card__text';
-			basketList.appendChild(basketNull);
-		} else this.unLockedButton(button);
 	}
 
 	getTotal(): number {
