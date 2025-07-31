@@ -3,7 +3,7 @@ export class OrderModel {
 		address: string;
 		email: string;
 		phone: string;
-		payment: 'online' | 'cash' | null;
+		payment: 'online' | 'cash';
 	};
 
 	constructor() {
@@ -11,7 +11,7 @@ export class OrderModel {
 			address: '',
 			email: '',
 			phone: '',
-			payment: null,
+			payment: 'online',
 		};
 	}
 

@@ -53,7 +53,7 @@ export class Validation {
 			return !inputElement.validity.valid || inputElement.value.trim() === '';
 		});
 	}
-   // 
+	//
 
 	private toggleButtonState(
 		inputList: HTMLInputElement[],
@@ -66,10 +66,21 @@ export class Validation {
 			return;
 		}
 
+		if (this.hasInvalidInput(inputList) && isPaymentMissing) {
+			buttonElement.disabled = true;
+			buttonElement.classList.add(validConfig.inactiveButtonClass);
+		}  
 		if (this.hasInvalidInput(inputList) && !isPaymentMissing) {
 			buttonElement.disabled = true;
 			buttonElement.classList.add(validConfig.inactiveButtonClass);
-		} else {
+		} 
+
+		if (!this.hasInvalidInput(inputList) && isPaymentMissing) {
+			buttonElement.disabled = true;
+			buttonElement.classList.add(validConfig.inactiveButtonClass);
+		}
+
+		if (!this.hasInvalidInput(inputList) && isPaymentMissing) {
 			buttonElement.disabled = false;
 			buttonElement.classList.remove(validConfig.inactiveButtonClass);
 		}
@@ -87,14 +98,24 @@ export class Validation {
 			validConfig.submitButtonSelector
 		) as HTMLButtonElement;
 		if (validConfig.submitButtonSelector) {
-			this.toggleButtonState(inputList, buttonElement, validConfig, isPaymentMissing);
+			this.toggleButtonState(
+				inputList,
+				buttonElement,
+				validConfig,
+				isPaymentMissing
+			);
 		}
 		inputList.forEach((inputElement) => {
 			inputElement.addEventListener('input', () => {
 				this.isValid(formElement, inputElement, validConfig);
 				// console.log(inputElement);
 				if (validConfig.submitButtonSelector) {
-					this.toggleButtonState(inputList, buttonElement, validConfig, isPaymentMissing);
+					this.toggleButtonState(
+						inputList,
+						buttonElement,
+						validConfig,
+						isPaymentMissing
+					);
 				}
 			});
 		});

@@ -10,8 +10,8 @@ export class PreviewCardContent {
       this.cardContent = cardContent
       this.previewContent = previewContent
 
-      this.previewContent.cardButtonPreview.addEventListener('click', () => {
-         emitter.emit ('basket:install')
+      this.previewContent.cardButtonPreview.addEventListener('click', (ev) => {
+         emitter.emit ('basket:install', ev)
       })
    }
 

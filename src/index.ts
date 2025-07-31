@@ -94,11 +94,27 @@ emitter.on('cardPreview:on', (ev: MouseEvent) => {
 		cardDescription: cardDescription,
 	});
 
+
+	setTimeout(() => {
+		const preview = document.querySelector(
+			'[data-id="cardPreview"]'
+		) as HTMLElement;
+		preview.dataset.idPersonal = cardEl.dataset.idPersonal;
+		console.log(preview.dataset.idPersonal);
+
+	}, 0);
+
 	modalManager.setContent(previewContent.cardFull);
 	modalManager.render();
 });
 
 emitter.on('basket:install', () => {
+	const preview = document.querySelector(
+		'[data-id="cardPreview"]'
+	) as HTMLElement;
+	const cardId = preview.dataset.idPersonal;
+	emitter.emit('checkButton:off', { cardId });
+
 	if (
 		!cardPreviewCurrentCard.currentCardElement ||
 		!cardPreviewCurrentCard.currentId
@@ -118,9 +134,23 @@ emitter.on('basket:install', () => {
 		id: cardPreviewCurrentCard.currentId,
 	};
 
+
 	emitter.emit('basket:itemAdded', product);
 	modalManager.closeModal();
 });
+
+emitter.on(
+	'checkButton:off',
+	({ cardId }: { cardId: string }) => {
+		const isInBasket = modelManager
+			.getBasketProducts()
+			.some((el) => el.id === cardId);
+
+		if (isInBasket) {
+			alert('Такой продукт уже добавлен в корзину!');
+		}
+	}
+);
 
 emitter.on('basket:on', () => {
 	modalManager.setContent(basketContent.basketInside);
@@ -146,7 +176,7 @@ emitter.on('basket:itemRemoved', ({ id }: { id: string }) => {
 emitter.on('basket:change', (products: SelectedProduct[]) => {
 	const items = products.map((product, index) => {
 		const item = new BasketItem(product, index, emitter).getElement();
-		
+
 		return item;
 	});
 
@@ -211,9 +241,15 @@ emitter.on('order:submit', () => {
 		total: modelManager.getTotal(),
 	};
 
+	interface IResponse {
+		id: string;
+		total: number;
+	}
+
 	apiWebLarek
 		.postOrder(order)
-		.then((data: any) => {
+		.then((data: IResponse) => {
+			console.log(data);
 			modalManager.setContent(successItems.orderSuccess);
 			successItems.orderSuccessDescription.textContent = `Списано ${data.total} синапсов`;
 			modalManager.openModal();
@@ -235,9 +271,14 @@ emitter.on('input:email', (ev: InputEvent) => {
 
 emitter.on('input:phone', (ev: Event) => {
 	setOrder.setPhone((ev.target as HTMLInputElement).value);
-	console.log(setOrder.data);
 });
 
 // --------- test -----------
 
 // modelManager
+
+// if (modelManager.getBasketProducts())
+
+// modelManager.getBasketProducts().forEach((el) => {
+// 	console.log(el)
+// })

@@ -34,8 +34,6 @@
 			<main class="gallery" data-id="main"></main>
 		</div>
 
-		modal_active
-
 		<div class="modal" id="modal-container">
 			<div class="modal__container">
 				<button class="modal__close" aria-label="закрыть"></button>
@@ -223,7 +221,7 @@
 		</template>
 
 		<template id="card-preview" data-id="previewTemplate">
-			<div class="card card_full" data-id="cardPreview">
+			<div class="card card_full" data-id="cardPreview" data-id-personal="">
 				<img
 					class="card__image"
 					src="<%=require('../images/Subtract.svg')%>"
@@ -294,7 +292,7 @@
 							<button
 								name="card"
 								type="button"
-								class="button button_alt"
+								class="button button_alt button_alt-active"
 								data-id="buttonOnline"
 							>
 								Онлайн
@@ -302,7 +300,7 @@
 							<button
 								name="cash"
 								type="button"
-								class="button button_alt "
+								class="button button_alt"
 								data-id="buttonCash"
 							>
 								При получении
@@ -333,7 +331,7 @@
 					>
 						Далее
 					</button>
-					<span class="form__errors adress-error" data-id="errorSpanAdress">привет</span>
+					<span class="form__errors adress-error" data-id="errorSpanAdress"></span>
 				</div>
 			</form>
 		</template>
