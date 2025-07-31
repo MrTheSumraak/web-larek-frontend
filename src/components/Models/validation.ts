@@ -10,7 +10,6 @@ export class Validation {
 		const errorElement = formElement.querySelector(`.${inputElement.id}-error`);
 		inputElement.classList.add(validConfig.inputErrorClass);
 		errorElement.classList.add(validConfig.errorClass);
-		console.log(errorElement);
 		errorElement.textContent = errorMessage;
 	}
 
@@ -30,7 +29,6 @@ export class Validation {
 		inputElement: HTMLInputElement,
 		validConfig: IValidationConfig
 	) {
-		// console.log(inputElement.validity.valid)
 		if (inputElement.validity.patternMismatch) {
 			inputElement.setCustomValidity(inputElement.dataset.errorMessage);
 		} else {
@@ -108,7 +106,6 @@ export class Validation {
 		inputList.forEach((inputElement) => {
 			inputElement.addEventListener('input', () => {
 				this.isValid(formElement, inputElement, validConfig);
-				// console.log(inputElement);
 				if (validConfig.submitButtonSelector) {
 					this.toggleButtonState(
 						inputList,
@@ -125,7 +122,6 @@ export class Validation {
 		const formList = Array.from(
 			document.querySelectorAll(validConfig.formSelector)
 		);
-		// console.log(formList)
 
 		formList.forEach((formElement: HTMLFormElement) => {
 			formElement.addEventListener('submit', (evt) => {

@@ -16,10 +16,6 @@ export class PageView {
 
 		this.emitter = emitter
 	}
-
-	check() {
-		// console.log(this.product);
-	}
 		
 	renderProductList(main: HTMLElement) {
 		this.product.forEach((product) => {

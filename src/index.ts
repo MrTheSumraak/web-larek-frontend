@@ -100,7 +100,6 @@ emitter.on('cardPreview:on', (ev: MouseEvent) => {
 			'[data-id="cardPreview"]'
 		) as HTMLElement;
 		preview.dataset.idPersonal = cardEl.dataset.idPersonal;
-		console.log(preview.dataset.idPersonal);
 
 	}, 0);
 
@@ -249,7 +248,6 @@ emitter.on('order:submit', () => {
 	apiWebLarek
 		.postOrder(order)
 		.then((data: IResponse) => {
-			console.log(data);
 			modalManager.setContent(successItems.orderSuccess);
 			successItems.orderSuccessDescription.textContent = `Списано ${data.total} синапсов`;
 			modalManager.openModal();
