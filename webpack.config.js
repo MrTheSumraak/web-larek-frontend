@@ -1,7 +1,5 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 
-// const webpack = require('webpack');
-// require('dotenv').config();
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
