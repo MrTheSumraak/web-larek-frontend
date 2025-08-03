@@ -30,12 +30,12 @@ export interface IOrderContact {
 
 export interface IOrderDelivery {
 	payment?: TPayment;
-	address?: string;
+	address?: string
 }
 
 export interface IOrder extends IOrderContact, IOrderDelivery {
-	items: string[];
-	total: number;
+	items?: string[];
+	total?: number;
 }
 
 export interface IOrderSuccess {

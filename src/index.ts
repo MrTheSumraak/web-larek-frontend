@@ -15,7 +15,7 @@ import { Basket, BasketItem } from './components/common/Views/basket';
 import { Modal } from './components/common/Views/modal';
 import { Contacts, OrderForm } from './components/common/Views/order';
 import { Success } from './components/common/Views/success';
-import { IOrderContact, IOrderDelivery, IProduct } from './types';
+import { IOrder, IOrderContact, IOrderDelivery, IProduct } from './types';
 
 const api = new LarekApi(CDN_URL, API_URL);
 const events = new EventEmitter();
@@ -173,8 +173,19 @@ events.on('contactsFormError:change', (errors: Partial<IOrderContact>) => {
 });
 
 events.on('contacts:submit', () => {
+	const order: IOrder = {
+		payment: appState.order.payment,
+		address: appState.order.address,
+		email: appState.order.email,
+		phone: appState.order.phone,
+		items: appState.basket.map((item) => item.id),
+		total: appState.getTotal(),
+	};
+
+	console.log(order)
+
 	api
-		.orderResult(appState.order)
+		.orderResult(order)
 		.then((result) => {
 			appState.clearBasket();
 			appState.clearOrder();

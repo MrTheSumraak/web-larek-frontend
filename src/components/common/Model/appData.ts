@@ -28,8 +28,6 @@ export class AppState extends Model<IAppState> {
 	preview: string | null;
 	order: IOrder = {
 		payment: 'онлайн',
-		items: [],
-		total: 0,
 		email: '',
 		phone: '',
 		address: '',
@@ -53,15 +51,19 @@ export class AppState extends Model<IAppState> {
 	addToBasket(item: IProduct) {
 		if (!this.basket.includes(item)) {
 			this.basket.push(item);
-			this.updateBasket();
+			this.updateBasket(); //  как не определен, если он есть, перенес этот метод чуть ниже данного
 		}
+	}
+	
+	updateBasket() {
+		this.emitChanges('basket:changed', this.basket);
+		console.log(this.basket);
 	}
 
 	removeFromBasket(item: IProduct) {
 		if (!this.basket.includes(item)) return;
 		const index = this.basket.findIndex((i) => i === item);
 		this.basket.splice(index, 1);
-		this.emitChanges('basket:open', { catalog: this.catalog });
 		this.emitChanges('basket:changed', { catalog: this.catalog });
 	}
 
@@ -79,11 +81,6 @@ export class AppState extends Model<IAppState> {
 	clearBasket() {
 		this.basket = [];
 		this.updateBasket();
-	}
-
-	updateBasket() {
-		this.emitChanges('basket:changed', this.basket);
-		console.log(this.basket);
 	}
 
 	setPaymentMethod(method: string) {
